@@ -1,15 +1,20 @@
 {
   "name": "ikachan_programming",
   "private": true,
-  "dependencies": {
-    "@rails/actioncable": "^6.0.0-alpha",
-    "@rails/activestorage": "^6.0.0-alpha",
-    "@rails/ujs": "^6.0.0-alpha",
-    "@rails/webpacker": "^4.0.7",
-    "turbolinks": "^5.2.0"
-  },
+  "dependencies": {},
   "version": "0.1.0",
+  "scripts": {
+    "start": "webpack --watch",
+    "build": "webpack -p"
+  },
   "devDependencies": {
-    "webpack-dev-server": "^3.9.0"
+    "clean-webpack-plugin": "^3.0.0",
+    "source-map-loader": "^0.2.4",
+    "ts-loader": "^6.2.1",
+    "typescript": "^3.6.4",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.9",
+    "webpack-livereload-plugin": "^2.2.0",
+    "webpack-manifest-plugin": "^2.2.0"
   }
 }
