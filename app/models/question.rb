@@ -10,4 +10,23 @@ class Question < ApplicationRecord
   scope :unresolved, -> { where resolved: false }
   validates :mode, inclusion: %w[normal terrible]
   before_validation { self.mode ||= :normal }
+  def self.can_create?
+    unresolved.count < 20
+  end
+
+  def set_unread(uid, time)
+    if uid != 'ikachan'
+      ikachan_unread ||= Unread.new uid: 'ikachan', time: time
+    end
+    if uid != self.uid
+      author_unread ||= Unread.new uid: self.uid, time: time
+    end
+  end
+
+  def recalc_unread
+    last_time = [created_at, comments.max(:created_at)].copact.max
+    [author_unread, ikachan_unread].each do |unread|
+      unread.destroy if unread && unread.time > last_time
+    end
+  end
 end
