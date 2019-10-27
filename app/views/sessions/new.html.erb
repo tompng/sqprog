@@ -1,0 +1,12 @@
+<h1>Sign in</h1>
+
+<% if ikachan? %>
+  <b>いかちゃん</b>でログインしています。
+<% else %>
+  現在、秘密のキー<b><%= @secret %></b>でログインしています。<br>
+  秘密のキーを使うことで、複数端末で同じユーザとしてログインすることができます
+<% end %>
+<%= form_tag '/sign_in' do %>
+  <%= text_field_tag 'secret', '', placeholder: 'secret key', autocomplete: 'off' %>
+  <%= submit_tag 'sign in' %>
+<% end %>
