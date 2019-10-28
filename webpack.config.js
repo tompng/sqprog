@@ -8,7 +8,7 @@ module.exports = (_, { mode }) => {
   const dist = path.resolve(__dirname, 'public/assets')
 
   return {
-    entry: ['./client/main.ts'],
+    entry: ['./client/main.tsx'],
     output: {
       filename: '[name].[contenthash].js',
       path: dist,
