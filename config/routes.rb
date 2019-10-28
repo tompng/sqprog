@@ -12,4 +12,6 @@ Rails.application.routes.draw do
   end
 
   resources :comments, only: [:create, :destroy]
+
+  get '*path', to: 'spa#show'
 end

@@ -4,10 +4,10 @@
     <title>IkachanProgramming</title>
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-    <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
   </head>
 
   <body>
-    <%= yield %>
+    <div id="app"></div>
+    <%= javascript_webpack_tag 'main.js' %>
   </body>
 </html>

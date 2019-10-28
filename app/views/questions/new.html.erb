@@ -1,0 +1,10 @@
+<h1>Send</h1>
+<%= form_tag '/questions' do %>
+  <%= text_area_tag 'description', '', placeholder: 'description', autocomplete: 'off' %>
+  <% 4.times do %>
+    <hr>
+    <%= text_field_tag 'codes[][file_name]', '', placeholder: 'filename' %><br>
+    <%= text_area_tag 'codes[][code]', '', placeholder: 'code' %>
+  <% end %>
+  <%= submit_tag 'create' %>
+<% end %>
