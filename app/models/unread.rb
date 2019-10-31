@@ -1,5 +1,5 @@
 class Unread < ApplicationRecord
   belongs_to :question
 
-  serializer_field :uid, :time, :questionId
+  serializer_field :id, :uid, :time, :questionId
 end

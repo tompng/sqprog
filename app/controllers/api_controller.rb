@@ -29,7 +29,10 @@ class ApiController < ApplicationController
     end
   end
 
-  def request
-    ArSerializer.serialize RootObject.new, raw_params[:query].as_json, context: current_user_uid
+  def show
+    base_query = raw_params[:query]
+    field_name = base_query[:field]
+    query = { field_name => { params: base_query[:params].as_json, query: base_query[:query].as_json } }
+    render json: ArSerializer.serialize(RootObject.new, query, context: current_user_uid).values.first
   end
 end

@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react'
 import { question } from '../api'
-import { CodeForm, CodeAddButton } from './CodeForm'
+import { CodeForm, CodeAddButton } from '../code/CodeForm'
 import styled from 'styled-components'
 import { compact } from 'lodash'
 import { FormControl, TextField, Button } from '@material-ui/core'

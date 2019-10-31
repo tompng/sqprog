@@ -18,7 +18,7 @@ Rails.application.routes.draw do
     end
   end
 
-  post 'api', to: 'api#request'
+  post 'api', to: 'api#show'
 
   get '*path', to: 'spa#show'
   root to: 'spa#show'

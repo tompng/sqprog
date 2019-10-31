@@ -3,14 +3,12 @@ import { render } from 'react-dom'
 import { createBrowserHistory } from 'history'
 import { Router, Route, Switch } from 'react-router-dom'
 import { NewQuestionForm } from './question/NewQuestionForm'
+import { QuestionView } from './question/QuestionView'
+
 const history = createBrowserHistory()
 
 const NewQuestionView: React.FC = () => {
   return <NewQuestionForm />
-}
-
-const QuestionView: React.FC = () => {
-  return <div>world</div>
 }
 
 const NotFoundView: React.FC = () => {
