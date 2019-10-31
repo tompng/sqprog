@@ -43,7 +43,7 @@ export const NewQuestionForm: React.FC = () => {
     try {
       setSending(true)
       const { id } = await question.create({ mode, description, codes })
-      history.push(`questions/${id}`)
+      history.push(`/questions/${id}`)
     } catch {
       setSending(false)
       alert('error')
