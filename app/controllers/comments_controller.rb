@@ -9,6 +9,7 @@ class CommentsController < ApplicationController
     end
     comment = question.comments.create! content: params[:content], uid: current_user_uid, code_thread: thread
     question.set_unread current_user_uid, comment.created_at
+    render json: { id: comment.id }
   end
 
   def destroy

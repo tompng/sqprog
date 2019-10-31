@@ -10,6 +10,13 @@ class Question < ApplicationRecord
   scope :unresolved, -> { where resolved: false }
   validates :mode, inclusion: %w[normal terrible]
   before_validation { self.mode ||= :normal }
+
+  serializer_field :id, :uid, :mode, :description, :resolved, :createdAt
+  serializer_field :questionComments, :codes
+  serializer_field :commentCount, count_of: :comments
+  serializer_field :unreads
+  include VoteFieldConcern
+
   def self.can_create?
     unresolved.count < 20
   end

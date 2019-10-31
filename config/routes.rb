@@ -4,14 +4,22 @@ Rails.application.routes.draw do
   get '/users/sign_in', to: redirect('/sign_in')
   post '/sign_in', to: 'sessions#create'
 
-  resources :questions, except: [:edit, :update] do
+  resources :questions, only: [:create, :destroy] do
     member do
       post :resolve
       post :read
+      post :vote
     end
   end
 
-  resources :comments, only: [:create, :destroy]
+  resources :comments, only: [:create, :update, :destroy] do
+    member do
+      post :vote
+    end
+  end
+
+  post 'api', to: 'api#request'
 
   get '*path', to: 'spa#show'
+  root to: 'spa#show'
 end
