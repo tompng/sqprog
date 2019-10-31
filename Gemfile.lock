@@ -1,3 +1,11 @@
+GIT
+  remote: https://github.com/tompng/ar_serializer.git
+  revision: 70d09b735ad4fa4b98b9414eb08856d220793f58
+  specs:
+    ar_serializer (1.1.0)
+      activerecord
+      top_n_loader
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -155,6 +163,8 @@ GEM
     sqlite3 (1.4.1)
     thor (0.20.3)
     thread_safe (0.3.6)
+    top_n_loader (1.0.0)
+      activerecord
     tzinfo (1.2.5)
       thread_safe (~> 0.1)
     web-console (4.0.1)
@@ -177,6 +187,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  ar_serializer!
   bootsnap (>= 1.4.2)
   byebug
   capybara (>= 2.15)
