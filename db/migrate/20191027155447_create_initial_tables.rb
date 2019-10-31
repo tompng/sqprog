@@ -20,10 +20,8 @@ class CreateInitialTables < ActiveRecord::Migration[6.0]
     create_table :code_threads do |t|
       t.references :code, null: false, index: false, foreign_key: true
       t.integer :line_number, null: false
-      t.string :uid, null: false
       t.timestamps null: false
       t.index [:code_id, :line_number], unique: true
-      t.index :uid
     end
 
     create_table :comments do |t|
@@ -31,6 +29,7 @@ class CreateInitialTables < ActiveRecord::Migration[6.0]
       t.references :code_thread, foreign_key: true
       t.string :uid, null: false
       t.text :content, null: false
+      t.boolean :edited, null: false, default: false
       t.timestamps null: false
       t.index :uid
     end

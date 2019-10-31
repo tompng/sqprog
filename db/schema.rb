@@ -15,11 +15,9 @@ ActiveRecord::Schema.define(version: 2019_10_27_155447) do
   create_table "code_threads", force: :cascade do |t|
     t.integer "code_id", null: false
     t.integer "line_number", null: false
-    t.string "uid", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["code_id", "line_number"], name: "index_code_threads_on_code_id_and_line_number", unique: true
-    t.index ["uid"], name: "index_code_threads_on_uid"
   end
 
   create_table "codes", force: :cascade do |t|
@@ -37,6 +35,7 @@ ActiveRecord::Schema.define(version: 2019_10_27_155447) do
     t.integer "code_thread_id"
     t.string "uid", null: false
     t.text "content", null: false
+    t.boolean "edited", default: false, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["code_thread_id"], name: "index_comments_on_code_thread_id"
