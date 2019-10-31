@@ -8,10 +8,12 @@ class Question < ApplicationRecord
   has_one :ikachan_unread, -> { where uid: :ikachan }, class_name: 'Unread'
   scope :resolved, -> { where resolved: true }
   scope :unresolved, -> { where resolved: false }
-  validates :mode, inclusion: %w[normal terrible]
+  MODES = %w[normal terrible]
+  validates :mode, inclusion: MODES
   before_validation { self.mode ||= :normal }
 
   serializer_field :id, :uid, :mode, :description, :resolved, :createdAt
+  serializer_field :mode, type: MODES
   serializer_field :questionComments, :codes
   serializer_field :commentCount, count_of: :comments
   serializer_field :unreads

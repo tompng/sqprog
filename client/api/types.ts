@@ -40,7 +40,7 @@ export interface TypeComment {
 export interface TypeQuestion {
   id: number
   uid: string
-  mode: string
+  mode: ("normal" | "terrible")
   description: string
   resolved: boolean
   createdAt: string

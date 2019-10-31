@@ -12,7 +12,7 @@ class ApiController < ApplicationController
     end
     serializer_field(
       :questions,
-      type: [Question],question.rb
+      type: [Question],
       params_type: { mode: %w[all mine resolved unresolved], limit: :int, offset: :int }
     ) do |uid, mode: 'all', limit: 10, offset: 0|
       questions = case mode
