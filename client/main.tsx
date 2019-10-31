@@ -1,12 +1,12 @@
 import React from 'react'
 import { render } from 'react-dom'
 import { createBrowserHistory } from 'history'
-import { Router, Route, Switch, RouteProps } from 'react-router-dom'
-
+import { Router, Route, Switch } from 'react-router-dom'
+import { NewQuestionForm } from './question/NewQuestionForm'
 const history = createBrowserHistory()
 
 const NewQuestionView: React.FC = () => {
-  return <div>hello</div>
+  return <NewQuestionForm />
 }
 
 const QuestionView: React.FC = () => {
