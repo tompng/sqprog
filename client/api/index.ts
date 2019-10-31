@@ -1,19 +1,42 @@
+import { useState, useEffect } from 'react'
 import { DataTypeFromQueryPair } from './DataType'
 import {
   TypeApiControllerRootObject,
-  TypeApiControllerRootObjectQuery,
+  TypeApiControllerRootObjectAliasFieldQuery,
   TypeVote
 } from './types'
+
+type ExtractData<T> = T extends { data: infer D } ? D : T
+export type DataTypeFromRootQuery<Q extends TypeApiControllerRootObjectAliasFieldQuery> =
+  ExtractData<DataTypeFromQueryPair<TypeApiControllerRootObject, { data: Q }>>
+  export type TypeRootQuery = TypeApiControllerRootObjectAliasFieldQuery
+
 
 function csrfToken() {
   return document.querySelector('meta[name="csrf-token"]')!.getAttribute('content')
 }
 
-export async function fetchAPI<Q extends TypeApiControllerRootObjectQuery>(query: Q):
-  Promise<DataTypeFromQueryPair<TypeApiControllerRootObject, Q>> {
+export async function fetchData<Q extends TypeApiControllerRootObjectAliasFieldQuery>(query: Q):
+  Promise<DataTypeFromRootQuery<Q>> {
   const response = await post('/api', { query })
   return await response.json()
 }
+
+type UseStateResult<T> = [T, (arg: T | ((t: T) => T)) => void]
+export function useFetchedState<Q extends TypeApiControllerRootObjectAliasFieldQuery>(query: Q):
+  UseStateResult<DataTypeFromRootQuery<Q> | null> {
+  const [state, setState] = useState<null | object>(null)
+  useEffect(() => {
+    let aborted = false
+    ;(async () => {
+      const data = await fetchData(query)
+      if (!aborted) setState(data)
+    })()
+    return () => { aborted = true }
+  }, [])
+  return [state, setState] as any
+}
+
 
 async function destroy(path: string) {
   return await post(path, {
