@@ -7,7 +7,7 @@ class QuestionsController < ApplicationController
   end
 
   def resolve
-    raise unless ikachan
+    raise unless ikachan?
     @question.update! resolved: true
     head :ok
   end
@@ -24,6 +24,7 @@ class QuestionsController < ApplicationController
     end
     raise if question.codes.empty?
     question.save!
+    question.unreads.create! uid: :ikachan, time: question.created_at
     render json: { id: question.id }
   end
 
