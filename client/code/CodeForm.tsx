@@ -51,16 +51,16 @@ export const CodeForm: React.FC<CodeFieldProps> = ({ id, fileName, code, onChang
   const classes = useStyles()
   const onFileNameChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     onChange(id, { fileName: e.target.value, code })
-  }, [id, code])
+  }, [onChange, id, code])
   const onCodeChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
     onChange(id, { fileName, code: e.target.value })
-  }, [id, fileName])
+  }, [onChange, id, fileName])
   const labelWithFileType = useMemo(() => {
     const match = fileName.match(/\.([^.]+)/)
     const type = match && (fileTypes[match[1]] || 'unknown')
     return `ファイル名${type ? `(${type})` : ''}`
   }, [fileName])
-  const onClose = useCallback(() => onChange(id, null), [])
+  const onClose = useCallback(() => onChange(id, null), [onChange])
   return (<Paper className={classes.paper}>
     <div style={{ display: 'flex' }}>
       <FormControl fullWidth>

@@ -29,16 +29,16 @@ export const NewQuestionForm: React.FC = () => {
   const { history } = useRouter()
   const onDescChange = useCallback(
     (e: React.ChangeEvent<HTMLTextAreaElement>) => setDescription(e.target.value),
-    []
+    [setDescription]
   )
-  const onModeChange = useCallback((_, v: Mode) => setMode(v), [])
+  const onModeChange = useCallback((_, v: Mode) => setMode(v), [setMode])
   const [codes, setCodes] = useState<CodeWithId[]>(() => [...Array(2)].map(() => newCode()))
   const onCodeChange = useCallback((id: number | string, codeObject: Code | null) => {
     setCodes(codes => compact(codes.map(code => code.id === id ? codeObject && { id, ...codeObject } : code)))
-  }, [])
+  }, [setCodes])
   const addCode = useCallback(() => {
     setCodes(codes => [...codes, newCode()])
-  }, [])
+  }, [setCodes])
   const send = useCallback(async () => {
     try {
       setSending(true)
