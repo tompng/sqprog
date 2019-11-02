@@ -1,15 +1,27 @@
 class CommentsController < ApplicationController
-  before_action :set_comment, only: [:destroy, :vote]
+  before_action :set_comment, only: [:destroy, :vote, :update]
 
   def create
     question = Question.find params[:question_id]
+    comment = nil
     if params[:code_id]
-      code = Code.find params[:code_id]
+      code = question.codes.find params[:code_id]
       thread = code.code_threads.where(line_number: params[:line_number]).first_or_initialize
+      ApplicationRecord.transaction do
+        thread.save! if thread.new_record?
+        comment = thread.comments.create! content: params[:content], uid: current_user_uid, question: question
+      end
+    else
+      comment = question.comments.create! content: params[:content], uid: current_user_uid
     end
-    comment = question.comments.create! content: params[:content], uid: current_user_uid, code_thread: thread
     question.set_unread current_user_uid, comment.created_at
-    render json: { id: comment.id }
+    render json: ArSerializer.serialize(comment, '*')
+  end
+
+  def update
+    raise unless ikachan? || @comment.uid == current_user_uid
+    @comment.update content: params[:content]
+    render json: ArSerializer.serialize(@comment, '*')
   end
 
   def destroy
