@@ -1,64 +1,92 @@
-import React, { useMemo, useCallback } from 'react'
+import React, { useMemo, useState, useCallback } from 'react'
 import highlightLines from '../lib/highlight'
 import styled from 'styled-components'
+import { StyledCode } from './StyledCode'
 import {
   FormControl, Input, InputLabel, TextField,
   Paper, IconButton, Button,
   makeStyles
 } from '@material-ui/core'
 
+import { NewCommentForm, UpdateCommentForm } from '../comment/CommentForm'
+
+const useStyles = makeStyles({
+  table: {
+    borderSpacing: 0,
+    width: '100%'
+  },
+  codeCol: {
+    paddingLeft: '0.4em'
+  },
+  commentableRow: {
+    cursor: 'pointer',
+    lineHeight: '1.2em',
+    '&:hover': { background: '#eee' },
+    '&:hover td:first-child:after': {
+      position: 'absolute',
+      fontSize: '1.5em',
+      color: 'gray',
+      fontWeight: 'bold',
+      top: '0',
+      left: '0.1em',
+      height: '1.2em',
+      lineHeight: '1.2em',
+      content: '"+"'
+    }
+  },
+  lineNumberCol: {
+    position: 'relative',
+    width: '3em',
+    color: 'silver',
+    paddingRight: '0.4em',
+    borderRight: '1px solid silver',
+    fontFamily: 'monospace',
+    textAlign: 'right',
+    fontSize: '0.8em',
+    '&:before': { content: 'attr(data-line-number)' }
+  }
+})
+
 export const Code: React.FC<{ fileName: string; code: string }> = ({ fileName, code }) => {
   const lang = useMemo(() => {
     const match = fileName.match(/\.([^.]+)/)
     return match ? match[1] : ''
   }, [fileName])
+  const classes = useStyles()
   const htmls = useMemo(() => highlightLines(lang, code), [code])
   return <Paper>
     <b>file:{fileName}</b>
     <hr />
-    {
-      htmls.map((html, i) => {
-        return <CodeHighlightDiv key={i} dangerouslySetInnerHTML={{ __html: html }} />
-      })
-    }
+    <table className={classes.table}>
+      <tbody>
+      {
+        htmls.map((html, lineIndex) => (
+          <CodeLine key={lineIndex} html={html} lineNumber={lineIndex + 1} />
+        ))
+      }
+      </tbody>
+    </table>
   </Paper>
 }
 
-const CodeHighlightDiv = styled.div`
-  font-family: Courier, Osaka-Mono, monospace;
-  white-space: pre;
-  & .hljs-comment, & .hljs-quote {
-    color: #8e908c;
-  }
-  & .hljs-variable, & .hljs-template-variable,
-  & .hljs-tag, & .hljs-name,
-  & .hljs-selector-id, & .hljs-selector-class,
-  & .hljs-regexp, & .hljs-deletion {
-    color: #c82829;
-  }
-  & .hljs-number, & .hljs-built_in,
-  & .hljs-builtin-name, & .hljs-literal,
-  & .hljs-type, & .hljs-params,
-  & .hljs-meta, & .hljs-link {
-    color: #f5871f;
-  }
-  & .hljs-attribute {
-    color: #eab700;
-  }
-  & .hljs-string, & .hljs-symbol,
-  & .hljs-bullet, & .hljs-addition {
-    color: #718c00;
-  }
-  & .hljs-title, & .hljs-section {
-    color: #4271ae;
-  }
-  & .hljs-keyword, & .hljs-selector-tag {
-    color: #8959a8;
-  }
-  & .hljs-emphasis {
-    font-style: italic;
-  }
-  & .hljs-strong {
-    font-weight: bold;
-  }
-`
+const CodeLineBase: React.FC<{ lineNumber: number; html: string }> = ({ lineNumber, html }) => {
+  const classes = useStyles()
+  const [commentOpen, setCommentOpen] = useState(false)
+  return <>
+    <tr onClick={() => setCommentOpen(true)} className={classes.commentableRow}>
+      <td className={classes.lineNumberCol} data-line-number={lineNumber} />
+      <td className={classes.codeCol}>
+        <StyledCode dangerouslySetInnerHTML={{ __html: html }} />
+      </td>
+    </tr>
+    { commentOpen &&
+      <tr>
+        <td className={classes.lineNumberCol}></td>
+        <td className={classes.codeCol}>
+          <NewCommentForm cancel={()=>setCommentOpen(false)} submit={() => {}}/>
+        </td>
+      </tr>
+    }
+  </>
+}
+const CodeLine = React.memo(CodeLineBase)

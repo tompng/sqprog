@@ -4,14 +4,17 @@ const alias: Record<string, string> = {
   tsx: 'jsx'
 }
 
-function highlightLines(lang: string, code: string) {
+export function highlightCode(lang: string, code: string) {
   lang = alias[lang] || lang
-  let html: string
   try {
-    html = highlight(lang, code).value
+    return highlight(lang, code).value
   } catch {
-    html = code
+    return code
   }
+}
+
+function highlightLines(lang: string, code: string) {
+  const html = highlightCode(lang, code)
   const lines = splitIntoLines(html)
   return lines.map(line =>
     line.map(

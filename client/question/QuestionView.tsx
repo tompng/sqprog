@@ -2,6 +2,7 @@ import React from 'react'
 import { RouteComponentProps } from 'react-router-dom'
 import { Code } from '../code/Code'
 import { useFetchedState } from '../api'
+import { NewCommentForm, UpdateCommentForm } from '../comment/CommentForm'
 
 export const QuestionView: React.FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
   const questionId = Number(match.params.id)
@@ -30,5 +31,7 @@ export const QuestionView: React.FC<RouteComponentProps<{ id: string }>> = ({ ma
         return <Code key={id} fileName={fileName} code={code} />
       })
     }
+    <NewCommentForm {...({} as any)}/>
+    <UpdateCommentForm {...({} as any)}/>
   </div>
 }
