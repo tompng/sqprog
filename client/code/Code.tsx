@@ -95,8 +95,9 @@ const CodeLineBase: React.FC<{ lineNumber: number; comments?: Comment[]; html: s
   const classes = useStyles()
   const [commentOpen, setCommentOpen] = useState(false)
   const cancel = useCallback(() => { setCommentOpen(false) }, [setCommentOpen])
+  const openComment = useCallback(() => { setCommentOpen(true) }, [setCommentOpen])
   return <LineNumberContext.Provider value={lineNumber}>
-    <tr onClick={() => setCommentOpen(true)} className={classes.commentableRow}>
+    <tr onClick={openComment} className={classes.commentableRow}>
       <td className={classes.lineNumberCol} data-line-number={lineNumber} />
       <td className={classes.codeCol}>
         <StyledCode dangerouslySetInnerHTML={{ __html: html }} />
@@ -107,9 +108,10 @@ const CodeLineBase: React.FC<{ lineNumber: number; comments?: Comment[]; html: s
         <td className={classes.lineNumberCol}></td>
         <td className={classes.codeCol}>
           {
-            comments && comments.map(c => <Comment {...c} />)
+            comments && comments.map(c => <Comment key={c.id} {...c} />)
           }
-          <NewCommentForm cancel={cancel} />
+          {!commentOpen && <Button onClick={openComment}>コメント</Button>}
+          {commentOpen && <NewCommentForm cancel={cancel} />}
         </td>
       </tr>
     }

@@ -7,7 +7,7 @@ import {
   makeStyles
 } from '@material-ui/core'
 import { comment as commentApi } from '../api'
-import { QuestionIdContext, CodeIdContext, LineNumberContext } from '../context'
+import { QuestionContext, CodeIdContext, LineNumberContext } from '../context'
 
 const CommentField: React.FC<{ content: string; disabled?: boolean; onChange: (c: string) => void }> = ({ content, disabled, onChange }) => {
   const handleChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -24,15 +24,25 @@ const CommentField: React.FC<{ content: string; disabled?: boolean; onChange: (c
       value={content}
       disabled={disabled}
       onChange={handleChange}
+      autoFocus
       />
     </FormControl>
   )
 }
 
-const CommentForm: React.FC<{ mode: 'create' | 'update'; initialContent?: string; disabled?: boolean; submit: (content: string) => void; cancel: () => void }> = ({ initialContent, mode, disabled, submit, cancel }) => {
+const CommentForm: React.FC<{ mode: 'create' | 'update'; initialContent?: string; submit: (content: string) => Promise<boolean>; cancel: () => void }> = ({ initialContent, mode, submit, cancel }) => {
   const [content, setContent] = useState(initialContent || '')
   const [preview, setPreview] = useState(false)
-  const handleSubmit = useCallback(() => submit(content), [submit, content])
+  const [disabled, setDisabled] = useState(false)
+  const handleSubmit = useCallback(async () => {
+    setDisabled(true)
+    const status = await submit(content)
+    setDisabled(false)
+    if (status) {
+      setContent('')
+      setPreview(false)
+    }
+  }, [submit, content, setContent, setDisabled, setPreview])
   const togglePreview = useCallback(() => setPreview(p => !p), [])
   const endPreview = useCallback(() => setPreview(false), [])
   return <>
@@ -53,22 +63,25 @@ const PreviewWrapper = styled.div`
   cursor: pointer;
 `
 export const NewCommentForm: React.FC<{ cancel: () => void }> = ({ cancel }) => {
-  const questionId = useContext(QuestionIdContext)
+  const question = useContext(QuestionContext)
   const codeId = useContext(CodeIdContext)
   const lineNumber = useContext(LineNumberContext)
-  const [disabled, setDisabled] = useState(false)
   const submit = useCallback(async (content: string) => {
-    setDisabled(true)
     try {
-      await commentApi.create(questionId, content, { codeId, lineNumber })
-    } finally {
-      setDisabled(false)
+      const pos = codeId && lineNumber ? { codeId, lineNumber } : undefined
+      await commentApi.create(question.id, content, pos)
+    } catch {
+      return false
     }
-  }, [questionId, codeId, lineNumber])
-  return <CommentForm mode='create' submit={submit} cancel={cancel} disabled={disabled} />
+    try {
+      await question.reload()
+    } catch { }
+    return true
+  }, [question, codeId, lineNumber])
+  return <CommentForm mode='create' submit={submit} cancel={cancel}/>
 }
 
 
-export const UpdateCommentForm: React.FC<{ submit: (content: string) => void, cancel: () => void }> = ({ submit, cancel }) => (
-  <CommentForm mode='update' submit={submit} cancel={cancel} />
+export const UpdateCommentForm: React.FC<{cancel: () => void }> = ({ cancel }) => (
+  <CommentForm mode='update' submit={} cancel={cancel} />
 )

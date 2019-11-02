@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { DataTypeFromQueryPair } from './DataType'
 import {
   TypeApiControllerRootObject,
@@ -22,10 +22,14 @@ export async function fetchData<Q extends TypeApiControllerRootObjectAliasFieldQ
   return await response.json()
 }
 
-type UseStateResult<T> = [T, (arg: T | ((t: T) => T)) => void]
+type UseFetchedStateResult<T> = [T, (arg: T | ((t: T) => T)) => void, () => Promise<undefined>]
 export function useFetchedState<Q extends TypeApiControllerRootObjectAliasFieldQuery>(query: Q):
-  UseStateResult<DataTypeFromRootQuery<Q> | null> {
+  UseFetchedStateResult<DataTypeFromRootQuery<Q> | null> {
   const [state, setState] = useState<null | object>(null)
+  const reload = useCallback(async () => {
+    const data = await fetchData(query)
+    setState(data)
+  }, [])
   useEffect(() => {
     let aborted = false
     ;(async () => {
@@ -34,7 +38,7 @@ export function useFetchedState<Q extends TypeApiControllerRootObjectAliasFieldQ
     })()
     return () => { aborted = true }
   }, [])
-  return [state, setState] as any
+  return [state, setState, reload] as any
 }
 
 

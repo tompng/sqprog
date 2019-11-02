@@ -1,12 +1,13 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
 import { Code } from '../code/Code'
 import { useFetchedState } from '../api'
-import { NewCommentForm, UpdateCommentForm } from '../comment/CommentForm'
-import { QuestionIdContext } from '../context'
+import { NewCommentForm } from '../comment/CommentForm'
+import Comment from '../comment/Comment'
+import { QuestionContext } from '../context'
 export const QuestionView: React.FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
   const questionId = Number(match.params.id)
-  const [question, setData] = useFetchedState({
+  const [question, , reload] = useFetchedState({
     field: 'question',
     params: { id: questionId },
     query: {
@@ -19,11 +20,13 @@ export const QuestionView: React.FC<RouteComponentProps<{ id: string }>> = ({ ma
         }
       },
       unreads: '*',
-      questionComments: { myVote: '*' }
+      questionComments: { '*': true, myVote: '*' }
     }
   })
+  const qid = question && question.id
+  const questionContextValue = useMemo(() => ({ id: qid || 0, reload }), [qid, reload])
   if (!question) return <div>loading...</div>
-  return <QuestionIdContext.Provider value={question.id}>
+  return <QuestionContext.Provider value={questionContextValue}>
     <div>uid:{question.uid}</div>
     <div>desc:{question.description}</div>
     {
@@ -31,7 +34,10 @@ export const QuestionView: React.FC<RouteComponentProps<{ id: string }>> = ({ ma
         return <Code key={id} codeId={id} fileName={fileName} code={code} threads={threads}/>
       })
     }
+    <hr/>
+    {
+      question.questionComments.map(c => <Comment key={c.id} {...c} />)
+    }
     <NewCommentForm {...({} as any)}/>
-    <UpdateCommentForm {...({} as any)}/>
-  </QuestionIdContext.Provider>
+  </QuestionContext.Provider>
 }
