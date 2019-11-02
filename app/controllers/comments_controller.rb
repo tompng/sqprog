@@ -15,7 +15,7 @@ class CommentsController < ApplicationController
       comment = question.comments.create! content: params[:content], uid: current_user_uid
     end
     question.set_unread current_user_uid, comment.created_at
-    render json: ArSerializer.serialize(comment, '*')
+    render json: ArSerializer.serialize(comment, '*', context: current_user_uid)
   end
 
   def update
@@ -45,7 +45,7 @@ class CommentsController < ApplicationController
     else
       @comment.votes.find_by(uid: current_user_uid)&.destroy!
     end
-    head :ok
+    render json: ArSerializer.serialize(comment, { vote: '*' }, context: current_user_uid)
   end
 
   private
