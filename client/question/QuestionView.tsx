@@ -3,10 +3,10 @@ import { RouteComponentProps } from 'react-router-dom'
 import { Code } from '../code/Code'
 import { useFetchedState } from '../api'
 import { NewCommentForm, UpdateCommentForm } from '../comment/CommentForm'
-
+import { QuestionIdContext } from '../context'
 export const QuestionView: React.FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
   const questionId = Number(match.params.id)
-  const [data] = useFetchedState({
+  const [question, setData] = useFetchedState({
     field: 'question',
     params: { id: questionId },
     query: {
@@ -22,16 +22,16 @@ export const QuestionView: React.FC<RouteComponentProps<{ id: string }>> = ({ ma
       questionComments: { myVote: '*' }
     }
   })
-  if (!data) return <div>loading...</div>
-  return <div>
-    <div>uid:{data.uid}</div>
-    <div>desc:{data.description}</div>
+  if (!question) return <div>loading...</div>
+  return <QuestionIdContext.Provider value={question.id}>
+    <div>uid:{question.uid}</div>
+    <div>desc:{question.description}</div>
     {
-      data.codes.map(({ id, fileName, code }) => {
-        return <Code key={id} fileName={fileName} code={code} />
+      question.codes.map(({ id, fileName, threads, code }) => {
+        return <Code key={id} codeId={id} fileName={fileName} code={code} threads={threads}/>
       })
     }
     <NewCommentForm {...({} as any)}/>
     <UpdateCommentForm {...({} as any)}/>
-  </div>
+  </QuestionIdContext.Provider>
 }

@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useCallback } from 'react'
+import React, { useMemo, useState, useCallback, useContext } from 'react'
 import highlightLines from '../lib/highlight'
 import styled from 'styled-components'
 import { StyledCode } from './StyledCode'
@@ -7,8 +7,9 @@ import {
   Paper, IconButton, Button,
   makeStyles
 } from '@material-ui/core'
-
+import { CodeIdContext, LineNumberContext } from '../context'
 import { NewCommentForm, UpdateCommentForm } from '../comment/CommentForm'
+import Comment from '../comment/Comment'
 
 const useStyles = makeStyles({
   table: {
@@ -47,46 +48,71 @@ const useStyles = makeStyles({
   }
 })
 
-export const Code: React.FC<{ fileName: string; code: string }> = ({ fileName, code }) => {
+type Comment = {
+  id: number
+  uid: string
+  content: string
+}
+type CodeProps = {
+  codeId: number
+  fileName: string
+  code: string
+  threads: {
+    lineNumber: number
+    comments: Comment[]
+  }[]
+}
+
+export const Code: React.FC<CodeProps> = ({ codeId, fileName, code, threads }) => {
   const lang = useMemo(() => {
     const match = fileName.match(/\.([^.]+)/)
     return match ? match[1] : ''
   }, [fileName])
   const classes = useStyles()
   const htmls = useMemo(() => highlightLines(lang, code), [code])
-  return <Paper>
-    <b>file:{fileName}</b>
-    <hr />
-    <table className={classes.table}>
-      <tbody>
-      {
-        htmls.map((html, lineIndex) => (
-          <CodeLine key={lineIndex} html={html} lineNumber={lineIndex + 1} />
-        ))
-      }
-      </tbody>
-    </table>
-  </Paper>
+  const commentsByLineNumber = useMemo(() => {
+    return new Map(threads.map(t => [t.lineNumber, t.comments]))
+  }, [threads])
+  return <CodeIdContext.Provider value={codeId}>
+    <Paper>
+      <b>file:{fileName}</b>
+      <hr />
+      <table className={classes.table}>
+        <tbody>
+        {
+          htmls.map((html, lineIndex) => {
+            const lineNumber = lineIndex + 1
+            return <CodeLine key={lineNumber} html={html} comments={commentsByLineNumber.get(lineNumber)} lineNumber={lineNumber} />
+          })
+        }
+        </tbody>
+      </table>
+    </Paper>
+  </CodeIdContext.Provider>
 }
 
-const CodeLineBase: React.FC<{ lineNumber: number; html: string }> = ({ lineNumber, html }) => {
+const CodeLineBase: React.FC<{ lineNumber: number; comments?: Comment[]; html: string }> = ({ lineNumber, html, comments }) => {
   const classes = useStyles()
   const [commentOpen, setCommentOpen] = useState(false)
-  return <>
+  const cancel = useCallback(() => { setCommentOpen(false) }, [setCommentOpen])
+  return <LineNumberContext.Provider value={lineNumber}>
     <tr onClick={() => setCommentOpen(true)} className={classes.commentableRow}>
       <td className={classes.lineNumberCol} data-line-number={lineNumber} />
       <td className={classes.codeCol}>
         <StyledCode dangerouslySetInnerHTML={{ __html: html }} />
       </td>
     </tr>
-    { commentOpen &&
+    { (comments || commentOpen) &&
       <tr>
         <td className={classes.lineNumberCol}></td>
         <td className={classes.codeCol}>
-          <NewCommentForm cancel={()=>setCommentOpen(false)} submit={() => {}}/>
+          {
+            comments && comments.map(c => <Comment {...c} />)
+          }
+          <NewCommentForm cancel={cancel} />
         </td>
       </tr>
     }
-  </>
+  </LineNumberContext.Provider>
 }
 const CodeLine = React.memo(CodeLineBase)
