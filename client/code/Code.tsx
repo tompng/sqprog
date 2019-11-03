@@ -38,6 +38,8 @@ const useStyles = makeStyles({
   lineNumberCol: {
     position: 'relative',
     width: '3em',
+    minWidth: '3em',
+    maxWidth: '3em',
     color: 'silver',
     paddingRight: '0.4em',
     borderRight: '1px solid silver',
@@ -62,7 +64,10 @@ type CodeProps = {
     comments: Comment[]
   }[]
 }
-
+const ScrollableWrapper = styled.div`
+width: 100%;
+overflow-x: auto;
+`
 export const Code: React.FC<CodeProps> = ({ codeId, fileName, code, threads }) => {
   const lang = useMemo(() => {
     const match = fileName.match(/\.([^.]+)/)
@@ -77,16 +82,18 @@ export const Code: React.FC<CodeProps> = ({ codeId, fileName, code, threads }) =
     <Paper>
       <b>file:{fileName}</b>
       <hr />
-      <table className={classes.table}>
-        <tbody>
-        {
-          htmls.map((html, lineIndex) => {
-            const lineNumber = lineIndex + 1
-            return <CodeLine key={lineNumber} html={html} comments={commentsByLineNumber.get(lineNumber)} lineNumber={lineNumber} />
-          })
-        }
-        </tbody>
-      </table>
+      <ScrollableWrapper>
+        <table className={classes.table}>
+          <tbody>
+          {
+            htmls.map((html, lineIndex) => {
+              const lineNumber = lineIndex + 1
+              return <CodeLine key={lineNumber} html={html} comments={commentsByLineNumber.get(lineNumber)} lineNumber={lineNumber} />
+            })
+          }
+          </tbody>
+        </table>
+      </ScrollableWrapper>
     </Paper>
   </CodeIdContext.Provider>
 }
