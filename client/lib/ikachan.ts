@@ -2,13 +2,13 @@ const coords = [{x:0.972,y:0},{x:0.952,y:0.098},{x:0.904,y:0.186},{x:0.843,y:0.2
 // JSON.stringify(coords.map(c=>({x:Math.round((c.x-0.3)/1.3*1000)/1000,y:Math.round(c.y/1.3*1000)/1000}))).replace(/"/g,'')
 type Point = { x: number; y: number }
 
-function coordsToPath(baseCoords: Point[], { rotate, scale }: { rotate?: number; scale?: number } = {} ) {
+function coordsToPath(baseCoords: Point[], { x: baseX, y: baseY, rotate, scale }: { x?: number; y?: number; rotate?: number; scale?: number } = {} ) {
   const cos = Math.cos(rotate || 0)
   const sin = Math.sin(rotate || 0)
   const s = scale === undefined ? 1 : scale
   const coords = baseCoords.map(({x, y}) => ({
-    x: (x * cos - y * sin) * s,
-    y: (x * sin + y * cos) * s
+    x: (baseX || 0) + (x * cos - y * sin) * s,
+    y: (baseY || 0) + (x * sin + y * cos) * s
   }))
   const xs = toBezierParams(coords.map(c => c.x), true)
   const ys = toBezierParams(coords.map(c => c.y), true)
@@ -37,6 +37,113 @@ function toBezierParams(values: number[], closed?: boolean) {
     }
   }
   return out
+}
+
+function roundShapeCoords(n: number, ratio: number = 1.2) {
+  const coords = []
+  for (let i = 0; i < n; i++) {
+    const th = 2 * Math.PI * i / n
+    const r = [ratio, 1 / ratio][i % 2]
+    coords.push({ x: Math.cos(th) * r, y: Math.sin(th) * r })
+  }
+  return coords
+}
+
+function color(t: number, from: number = 0, to: number = 1, alpha: number = 1) {
+  function f(t: number) {
+    t = (t % 1 + 1) % 1
+    return t < 1 / 3 ? 1 : t < 2 / 3 ? 2 - 3 * t : 3 * t - 2
+  }
+  function c(v: number) { return Math.round((from + (to - from) * v) * 255) }
+  return `rgba(${c(f(t))},${c(f(t+1/3))},${c(f(t+2/3))},${Math.round(100 * alpha) / 100})`
+}
+
+export function genIconSVG(seed: string='0123456789abcdef') {
+  let seedIndex = 0
+  function readHex() {
+    const a = seed[seedIndex % seed.length].charCodeAt(0)
+    seedIndex++
+    return (a >= 64 ? 9 + a : a) % 16
+  }
+  function randomBool() {
+    return randomInt(2) === 1
+  }
+  function randomInt(n: number) {
+    const a = readHex()
+    if (n == 2 || n == 4 || n == 8 || n == 16) return a % n
+    const b = a * 16 + readHex()
+    return b % n
+  }
+  function randomFloat(from: number, to: number, highRes: boolean = false) {
+    const t = highRes ? (16 * readHex() + readHex()) / 255 : readHex() / 15
+    return from + (to - from) * t
+  }
+  const paths = []
+  const baseColor = randomFloat(0, 1, true)
+  const baseShapeN = [3, 4, 5, 6][randomInt(4)]
+  const shapeRatio = randomFloat(0.5, 1.5)
+  const baseShape = roundShapeCoords(baseShapeN * 2, 1 + shapeRatio / baseShapeN)
+  paths.push(`<rect x="0" y="0" width="100" height="100" fill="${color(baseColor, 0.8)}" />`)
+  for (let i = 0; i < 12; i++) {
+    const path = coordsToPath(baseShape, {
+      x: randomFloat(-0.8, 0.8, true),
+      y: randomFloat(-0.8, 0.8, true),
+      scale: 0.2 + 0.2 * (1 - i / 12) ** 2,
+      rotate: randomFloat(0, 2 * Math.PI, true)
+    })
+    const cscale = randomFloat(0.08, 0.16)
+    paths.push(`<path d="${path}" fill="${color(randomFloat(baseColor - 0.2, baseColor + 0.2, true), 0.84 - cscale, 0.84 + cscale, 0.8)}" />`)
+  }
+  const [numSquids, sizeFrom, sizeTo, distFrom, distTo] = [
+    [1, 0.6, 0.8, 0, 0.2],
+    [2, 0.5, 0.6, 0.3, 0.4],
+    [3, 0.4, 0.5, 0.35, 0.5]
+  ][randomInt(3)]
+  const mixBaseShape = numSquids >= 2 && randomBool()
+  const posBaseTheta = randomFloat(0, 2 * Math.PI)
+  for (let i = 0; i < numSquids; i++) {
+    const nobi = randomFloat(0.9, 1.3)
+    const magari = randomFloat(-0.3, 0.3)
+    let shape
+    if (i === 0 && mixBaseShape) {
+      const accentShapeN = [6, 5][randomInt(2)]
+      shape = roundShapeCoords(accentShapeN * 2, 1 + shapeRatio / accentShapeN)
+    } else {
+      shape = coords.map(({ x, y }) => {
+        x *= nobi
+        y /= nobi
+        let dy = 1
+        let dx = -2 * x * magari
+        const dr = Math.sqrt(dx ** 2 + dy ** 2)
+        dx /= dr
+        dy /= dr
+        return {
+          x: x + y * dx,
+          y: y * dy + x * x * magari,
+        }
+      })
+    }
+    const th = posBaseTheta + 2 * Math.PI * i / numSquids
+    const r = randomFloat(distFrom, distTo)
+    const path = coordsToPath(shape, {
+      rotate: randomFloat(0, 2 * Math.PI, true),
+      scale: randomFloat(sizeFrom, sizeTo),
+      x: r * Math.cos(th),
+      y: r * Math.sin(th)
+    })
+    const col = color(randomFloat(baseColor + 0.2, baseColor + 0.8, true), randomFloat(0, (i + 1) / numSquids))
+    paths.push(
+      `<path d="${path}" fill="${col}" />`
+    )
+  }
+  const svghead = '<svg width="100px" height="100px" version="1.1" xmlns="http://www.w3.org/2000/svg">'
+  return svghead + paths.join('') + '</svg>'
+}
+
+export function randomString(){
+  let s = ''
+  while (s.length < 64) s += Math.random().toString(16).substr(2)
+  return s.substring(0, 64)
 }
 
 export function applyRippleStyle() {
