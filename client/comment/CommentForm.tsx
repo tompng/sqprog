@@ -30,7 +30,7 @@ const CommentField: React.FC<{ content: string; disabled?: boolean; onChange: (c
   )
 }
 
-const CommentForm: React.FC<{ mode: 'create' | 'update'; initialContent?: string; submit: (content: string) => Promise<boolean>; cancel: () => void }> = ({ initialContent, mode, submit, cancel }) => {
+const CommentForm: React.FC<{ mode: 'create' | 'update'; initialContent?: string; submit: (content: string) => Promise<boolean>; cancel?: () => void }> = ({ initialContent, mode, submit, cancel }) => {
   const [content, setContent] = useState(initialContent || '')
   const [preview, setPreview] = useState(false)
   const [disabled, setDisabled] = useState(false)
@@ -52,7 +52,7 @@ const CommentForm: React.FC<{ mode: 'create' | 'update'; initialContent?: string
       : <CommentField disabled={disabled} content={content} onChange={setContent} />
     }
     <Button onClick={togglePreview} disabled={!content}>{preview ? '編集に戻る' : 'プレビュー'}</Button>
-    <Button disabled={disabled} onClick={cancel}>キャンセル</Button>
+    { cancel && <Button disabled={disabled} onClick={cancel}>キャンセル</Button> }
     { mode === 'create' && <Button disabled={disabled} onClick={handleSubmit} color="primary">送信</Button>}
     { mode === 'update' && <Button disabled={disabled} onClick={handleSubmit} color={content ? 'primary' : 'secondary'}>{content ? '保存' : '削除'}</Button>}
   </>
@@ -83,5 +83,5 @@ export const NewCommentForm: React.FC<{ cancel: () => void }> = ({ cancel }) => 
 
 
 export const UpdateCommentForm: React.FC<{cancel: () => void }> = ({ cancel }) => (
-  <CommentForm mode='update' submit={} cancel={cancel} />
+  <CommentForm mode='update' submit={async ()=>true} cancel={cancel} />
 )
