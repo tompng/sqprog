@@ -1,6 +1,7 @@
 class ApplicationController < ActionController::Base
   include SessionsConcern
   helper_method :ikachan?
+  helper_method :current_user_uid
 
   alias_method :raw_params, :params
   def params

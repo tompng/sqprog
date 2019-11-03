@@ -6,7 +6,7 @@
     <%= csp_meta_tag %>
   </head>
   <body>
-    <div id="app"></div>
+    <div id="app" data-uid="<%= current_user_uid %>"></div>
     <%= javascript_webpack_tag 'main.js' %>
   </body>
 </html>

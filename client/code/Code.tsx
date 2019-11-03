@@ -98,6 +98,12 @@ export const Code: React.FC<CodeProps> = ({ codeId, fileName, code, threads }) =
   </CodeIdContext.Provider>
 }
 
+const CommentGroup = styled.div`
+  width: calc(100vw - 5em);
+  border-radius: 4px;
+  border: 1px solid silver;
+`
+
 const CodeLineBase: React.FC<{ lineNumber: number; comments?: Comment[]; html: string }> = ({ lineNumber, html, comments }) => {
   const classes = useStyles()
   const [commentOpen, setCommentOpen] = useState(false)
@@ -114,11 +120,13 @@ const CodeLineBase: React.FC<{ lineNumber: number; comments?: Comment[]; html: s
       <tr>
         <td className={classes.lineNumberCol}></td>
         <td className={classes.codeCol}>
-          {
-            comments && comments.map(c => <Comment key={c.id} {...c} />)
-          }
-          {!commentOpen && <Button onClick={openComment}>コメント</Button>}
-          {commentOpen && <NewCommentForm cancel={cancel} />}
+          <CommentGroup>
+            {
+              comments && comments.map(c => <Comment key={c.id} {...c} />)
+            }
+            {!commentOpen && <Button onClick={openComment}>コメント</Button>}
+            {commentOpen && <NewCommentForm cancel={cancel} />}
+          </CommentGroup>
         </td>
       </tr>
     }
