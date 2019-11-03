@@ -1,10 +1,10 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { render } from 'react-dom'
 import { createBrowserHistory } from 'history'
 import { Router, Route, Switch } from 'react-router-dom'
 import { NewQuestionForm } from './question/NewQuestionForm'
 import { QuestionView } from './question/QuestionView'
-
+import { applyRippleStyle } from './lib/ikachan'
 const history = createBrowserHistory()
 
 const NewQuestionView: React.FC = () => {
@@ -16,6 +16,9 @@ const NotFoundView: React.FC = () => {
 }
 
 const Routes: React.FC = () => {
+  useEffect(() => {
+    applyRippleStyle()
+  }, [])
   return (
     <Router history={history}>
       <Switch>
