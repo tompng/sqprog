@@ -52,8 +52,8 @@ export const NewQuestionForm: React.FC = () => {
     <NewQuestionHeader>
       <div>いかちゃんにコードを送りつけよう</div>
       <Select value={mode} onChange={onModeChange}>
-        <MenuItem value="normal">通常モード</MenuItem>
-        <MenuItem value="terrible">理不尽モード</MenuItem>
+        <MenuItem value="normal">通常モードで見てもらう</MenuItem>
+        <MenuItem value="terrible">理不尽モードで見てもらう</MenuItem>
       </Select>
     </NewQuestionHeader>
     <FormWrapper>

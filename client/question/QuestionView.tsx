@@ -80,7 +80,13 @@ export const QuestionView: React.FC<RouteComponentProps<{ id: string }>> = ({ ma
           </Menu>
         </QuestionMenu>
       }
-      <CommentDescription>{question.description || '説明: なし'}</CommentDescription>
+      <CommentDescription>
+        {
+          question.mode === 'terrible' &&
+          <div><TerribleModeTag>理不尽なコメントをリクエスト</TerribleModeTag></div>
+        }
+        {question.description || '説明: なし'}
+      </CommentDescription>
       <VoteWrapper>
         <Vote questionId={question.id} myVote={question.myVote && question.myVote.value} voteSummary={question.voteSummary} />
       </VoteWrapper>
@@ -98,6 +104,14 @@ export const QuestionView: React.FC<RouteComponentProps<{ id: string }>> = ({ ma
     }
   </QuestionContext.Provider>
 }
+
+const TerribleModeTag = styled.span`
+  background: red;
+  border-radius: 4px;
+  color: white;
+  font-weight: bold;
+  padding: 2px 4px;
+`
 
 const QuestionMenu = styled.div`
 position: absolute;
