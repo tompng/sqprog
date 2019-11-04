@@ -1,6 +1,6 @@
 import React, { useMemo, useEffect, useRef } from 'react'
 import styled from 'styled-components'
-import { genIconSVG } from '../lib/ikachan'
+import { genIconSVG, genIkachanSVG } from '../lib/ikachan'
 
 const IconFactory = {
   icons: new Map<string, { ref: number; svg: string }>(),
@@ -10,7 +10,7 @@ const IconFactory = {
       el.ref++
       return el.svg
     }
-    const svg = genIconSVG(uid)
+    const svg = uid === 'ikachan' ? genIkachanSVG() : genIconSVG(uid)
     this.icons.set(uid, { ref: 1, svg })
     return svg
   },

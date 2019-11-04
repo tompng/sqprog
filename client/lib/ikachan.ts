@@ -163,6 +163,27 @@ function color(t: number, from: number = 0, to: number = 1, alpha: number = 1) {
   return `rgba(${c(f(t))},${c(f(t+1/3))},${c(f(t+2/3))},${Math.round(100 * alpha) / 100})`
 }
 
+export function genIkachanSVG() {
+  const paths: string[] = []
+  paths.push(`<rect x="0" y="0" width="100" height="100" fill="rgb(80,128,255)" />`)
+  const star = roundShapeCoords(10, 1.2)
+  const sqpath = coordsToPath(coords, {
+    rotate: -Math.PI / 5,
+    scale: 0.6,
+    x: 0.2,
+    y: 0.2
+  })
+  const starpath = coordsToPath(star, {
+    rotate: -Math.PI / 8,
+    scale: 0.4,
+    x: -0.3,
+    y: -0.3
+  })
+  paths.push(`<path d="${sqpath}" fill="white" />`)
+  paths.push(`<path d="${starpath}" fill="rgba(240,255,128)" />`)
+  return svgOpenTag + paths.join('') + svgCloseTag
+}
+
 export function genIconSVG(seed: string='0123456789abcdef') {
   let seedIndex = 0
   function readHex() {
