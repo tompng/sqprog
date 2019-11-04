@@ -26,14 +26,18 @@ class CommentsController < ApplicationController
 
   def destroy
     raise unless ikachan? || @comment.uid == current_user_uid
-    @comment.code_thread&.with_lock do
-      if @comment.code_thread.comments.count == 1
-        @comment.code_thread.destroy!
-      else
-        @comment.destroy!
+    if @comment.code_thread
+      @comment.code_thread&.with_lock do
+        if @comment.code_thread.comments.count == 1
+          @comment.code_thread.destroy!
+        else
+          @comment.destroy!
+        end
       end
+    else
+      @comment.destroy!
     end
-    @comment.question.question.recalc_unread
+    @comment.question.recalc_unread
     head :ok
   end
 
@@ -45,7 +49,7 @@ class CommentsController < ApplicationController
     else
       @comment.votes.find_by(uid: current_user_uid)&.destroy!
     end
-    render json: ArSerializer.serialize(comment, { vote: '*' }, context: current_user_uid)
+    render json: ArSerializer.serialize(@comment, { myVote: '*' }, context: current_user_uid)
   end
 
   private

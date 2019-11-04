@@ -33,9 +33,7 @@ class Question < ApplicationRecord
   end
 
   def recalc_unread
-    last_time = [created_at, comments.max(:created_at)].copact.max
-    unreads.each do |unread|
-      unread.destroy if unread.time > last_time
-    end
+    last_time = [created_at, comments.maximum(:created_at)].compact.max
+    unreads.where('time > ?', last_time).destroy_all
   end
 end
