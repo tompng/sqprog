@@ -70,8 +70,8 @@ export const question = {
     const response = await post('/questions', request)
     return await response.json() as { id: number }
   },
-  async resolve(questionId: number) {
-    await post(`/questions/${questionId}/resolve`)
+  async resolve(questionId: number, resolved: boolean) {
+    await post(`/questions/${questionId}/resolve`, { resolved })
   },
   async destroy(questionId: number) {
     await destroy(`/questions/${questionId}`)

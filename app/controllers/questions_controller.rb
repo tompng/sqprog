@@ -8,7 +8,7 @@ class QuestionsController < ApplicationController
 
   def resolve
     raise unless ikachan?
-    @question.update! resolved: true
+    @question.update! resolved: params[:resolved]
     head :ok
   end
 
