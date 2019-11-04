@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_27_155447) do
+ActiveRecord::Schema.define(version: 2019_11_04_144108) do
 
   create_table "code_threads", force: :cascade do |t|
     t.integer "code_id", null: false
@@ -50,6 +50,7 @@ ActiveRecord::Schema.define(version: 2019_10_27_155447) do
     t.boolean "resolved", default: false, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "title", null: false
     t.index ["uid"], name: "index_questions_on_uid"
   end
 
