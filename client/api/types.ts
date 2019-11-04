@@ -32,7 +32,7 @@ export interface TypeComment {
   content: string
   edited: boolean
   createdAt: string
-  voteSummary: { up: number; down: number; left: number; right: number; upleft: number; upright: number; downleft: number; downright: number }
+  voteSummary: { up: (number | null); down: (number | null); forward: (number | null); rotate: (number | null) }
   myVote: TypeVote
   _meta?: { name: 'Comment'; query: TypeCommentQueryBase }
 }
@@ -48,12 +48,13 @@ export interface TypeQuestion {
   codes: (TypeCode [])
   commentCount: number
   unreads: (TypeUnread [])
-  voteSummary: { up: number; down: number; left: number; right: number; upleft: number; upright: number; downleft: number; downright: number }
+  voteSummary: { up: (number | null); down: (number | null); forward: (number | null); rotate: (number | null) }
   myVote: TypeVote
   _meta?: { name: 'Question'; query: TypeQuestionQueryBase }
 }
 
 export interface TypeUnread {
+  id: number
   uid: string
   time: string
   questionId: number
@@ -64,7 +65,7 @@ export interface TypeVote {
   id: number
   uid: string
   createdAt: string
-  value: ("up" | "down" | "left" | "right" | "upleft" | "upright" | "downleft" | "downright")
+  value: ("up" | "down" | "forward" | "rotate")
   _meta?: { name: 'Vote'; query: TypeVoteQueryBase }
 }
 
@@ -198,13 +199,15 @@ export type TypeUnreadQuery = TypeUnreadStandaloneFields | Readonly<TypeUnreadSt
     { [key in keyof TypeUnreadQueryBase]?: key extends '*' ? true : TypeUnreadQueryBase[key] | TypeUnreadAliasFieldQuery }
     & { [key: string]: TypeUnreadAliasFieldQuery | NonAliasQuery }
   )
-export type TypeUnreadStandaloneFields = 'uid' | 'time' | 'questionId' | '*'
+export type TypeUnreadStandaloneFields = 'id' | 'uid' | 'time' | 'questionId' | '*'
 export type TypeUnreadAliasFieldQuery =
+  | { field: 'id' }
   | { field: 'uid' }
   | { field: 'time' }
   | { field: 'questionId' }
 
 export interface TypeUnreadQueryBase {
+  id: true
   uid: true
   time: true
   questionId: true
