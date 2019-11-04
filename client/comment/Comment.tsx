@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useCallback, useContext, useRef } from 'react'
+import React, { useMemo, useState, useCallback, useContext, useRef, useEffect } from 'react'
 import CommentHighlight from './CommentHighlight'
 import styled from 'styled-components'
 import UserIcon from '../components/UserIcon'
@@ -10,6 +10,7 @@ import DeleteIcon from '@material-ui/icons/Delete'
 import { comment as commentApi } from '../api'
 import { VoteUpSVG, VoteDownSVG, VoteForwardSVG, VoteRotateSVG, VoteSplatSVG } from '../lib/ikachan'
 import { QuestionContext } from '../context'
+import { UpdateCommentForm } from './CommentForm'
 import {
   Paper, IconButton, Button, Menu, MenuItem,
   makeStyles
@@ -18,36 +19,46 @@ type VoteType = 'up' | 'down' | 'forward' | 'rotate'
 type VoteSummary = { [key in VoteType]?: number | null }
 type CommentProps = { commentId: number; uid: string; content: string, myVote?: VoteType | null, voteSummary?: VoteSummary }
 const Comment: React.FC<CommentProps> = ({ commentId, uid, content, myVote, voteSummary }) => {
-  const [anchorEl, setAnchorEl] = React.useState<Element | null>(null)
-  const open = Boolean(anchorEl)
+  const [anchorEl, setAnchorEl] = useState<Element | null>(null)
+  const [editing, setEditing] = useState(false)
+  const [tmpContent, setTmpContent] = useState<string | null>(null)
   const currentUser = useContext(CurrentUserContext)
+  const mountedRef = useRef(true)
+  useEffect(() => () => { mountedRef.current = false }, [mountedRef])
   const handleClick = (event: React.MouseEvent) => {
     setAnchorEl(event.currentTarget)
   }
-  const handleClose = () => {
-      setAnchorEl(null);
-    }
+  const handleEditDone = useCallback(() => {
+    if (!mountedRef.current) return
+    setEditing(false)
+    setTmpContent(null)
+  }, [mountedRef, setEditing, setTmpContent])
+  const handleEditStart = useCallback(() => {
+    setEditing(true)
+    setAnchorEl(null)
+  }, [setEditing, setAnchorEl])
+  const handleClose = useCallback(() => {
+    setAnchorEl(null)
+  }, [setAnchorEl])
   return <CommentWrapper>
     <CommentUserInfo>
       <UserIcon uid={uid} size={56} />
       <div>{uid === 'ikachan' && 'いかちゃん'}</div>
     </CommentUserInfo>
     <CommentBody>
-      <CommentHighlight content={content} />
+      { editing
+        ? <UpdateCommentForm commentId={commentId} content={content} onEditUpdate={setTmpContent} onEditDone={handleEditDone} />
+        : <CommentHighlight content={tmpContent || content} />
+      }
     </CommentBody>
     { (currentUser === 'ikachan' || currentUser === uid) &&
       <CommentMenu>
         <IconButton onClick={handleClick}>
           <MoreVertIcon />
         </IconButton>
-        <Menu
-          anchorEl={anchorEl}
-          keepMounted
-          open={!!anchorEl}
-          onClose={handleClose}
-        >
-          <MenuItem onClick={handleClose}><EditIcon /></MenuItem>
-          <MenuItem onClick={handleClose}><DeleteIcon /></MenuItem>
+        <Menu anchorEl={anchorEl} open={!!anchorEl} onClose={handleClose}>
+          <MenuItem onClick={handleEditStart}><EditIcon />編集</MenuItem>
+          <MenuItem onClick={handleClose}><DeleteIcon />削除</MenuItem>
         </Menu>
       </CommentMenu>
     }

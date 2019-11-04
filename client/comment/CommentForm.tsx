@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useCallback, useContext } from 'react'
+import React, { useMemo, useState, useCallback, useContext, useRef, useEffect } from 'react'
 import CommentHighlight from './CommentHighlight'
 import styled from 'styled-components'
 import {
@@ -34,9 +34,12 @@ const CommentForm: React.FC<{ mode: 'create' | 'update'; initialContent?: string
   const [content, setContent] = useState(initialContent || '')
   const [preview, setPreview] = useState(false)
   const [disabled, setDisabled] = useState(false)
+  const mountedRef = useRef(true)
+  useEffect(() => () => { mountedRef.current = false }, [mountedRef])
   const handleSubmit = useCallback(async () => {
     setDisabled(true)
     const status = await submit(content)
+    if (!mountedRef.current) return
     setDisabled(false)
     if (status) {
       setContent('')
@@ -82,6 +85,24 @@ export const NewCommentForm: React.FC<{ cancel: () => void }> = ({ cancel }) => 
 }
 
 
-export const UpdateCommentForm: React.FC<{cancel: () => void }> = ({ cancel }) => (
-  <CommentForm mode='update' submit={async ()=>true} cancel={cancel} />
-)
+export const UpdateCommentForm: React.FC<{ content: string; commentId: number; onEditUpdate: (v: string) => void; onEditDone: () => void }> = ({ commentId, content, onEditUpdate, onEditDone }) => {
+  const question = useContext(QuestionContext)
+  const submit = useCallback(async (content: string) => {
+    try {
+      onEditUpdate(content)
+      if (content) {
+        await commentApi.update(commentId, content)
+      } else {
+        await commentApi.destroy(commentId)
+      }
+    } catch {
+      return false
+    }
+    try {
+      await question.reload()
+      onEditDone()
+    } catch { }
+    return true
+  }, [onEditDone, commentId])
+  return <CommentForm mode='update' initialContent={content} submit={submit} cancel={onEditDone} />
+}

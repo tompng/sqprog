@@ -43,14 +43,16 @@ export function useFetchedState<Q extends TypeApiControllerRootObjectAliasFieldQ
 
 
 async function destroy(path: string) {
-  return await post(path, {
-    _method: 'delete',
-  })
+  return await post(path, {}, 'DELETE')
 }
 
-async function post(path: string, data?: any) {
+async function patch(path: string, data?: any) {
+  return await post(path, data, 'PATCH')
+}
+
+async function post(path: string, data?: any, method?: any) {
   return await fetch(path, {
-    method: 'POST',
+    method: method || 'POST',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({...data, authenticity_token: csrfToken() })
@@ -87,7 +89,7 @@ export const comment = {
     return await response.json() as { id: number }
   },
   async update(commentId: number, content: string) {
-    await post(`/comments/${commentId}`, { content })
+    await patch(`/comments/${commentId}`, { content })
   },
   async destroy(commentId: number) {
     await destroy(`/comments/${commentId}`)
