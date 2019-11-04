@@ -7,6 +7,7 @@ import {
   Paper, IconButton, Button,
   makeStyles
 } from '@material-ui/core'
+import CommentIcon from '@material-ui/icons/Comment'
 import { CodeIdContext, LineNumberContext } from '../context'
 import { NewCommentForm, UpdateCommentForm } from '../comment/CommentForm'
 import Comment from '../comment/Comment'
@@ -127,7 +128,7 @@ const CodeLineBase: React.FC<{ lineNumber: number; comments?: Comment[]; html: s
             {
               comments && comments.map(c => <Comment key={c.id} commentId={c.id} {...c} myVote={c.myVote && c.myVote.value}/>)
             }
-            {!commentOpen && <Button onClick={openComment}>コメント</Button>}
+            {!commentOpen && <Button onClick={openComment}><CommentIcon />コメント</Button>}
             {commentOpen && <NewCommentForm cancel={cancel} />}
           </CommentGroup>
         </td>
