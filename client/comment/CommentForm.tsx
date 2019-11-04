@@ -16,16 +16,15 @@ const CommentField: React.FC<{ content: string; autoFocus?: boolean; disabled?: 
   return (
     <FormControl fullWidth>
       <TextField
-      placeholder="コメント..."
-      multiline
-      rows={4}
-      inputProps={{ spellCheck: false }}
-      variant="standard"
-      value={content}
-      disabled={disabled}
-      onChange={handleChange}
-      autoFocus={autoFocus}
-      />
+        placeholder="コメント..."
+        multiline
+        rows={4}
+        inputProps={{ spellCheck: false, style: { padding: '0 4px' } }}
+        variant="standard"
+        value={content}
+        disabled={disabled}
+        onChange={handleChange}
+        autoFocus={autoFocus} />
     </FormControl>
   )
 }
@@ -53,12 +52,11 @@ const CommentForm: React.FC<{ mode: 'create' | 'update'; autoFocus?: boolean; in
     }
     cancel()
   }, [cancel, content, initialContent])
-  const togglePreview = useCallback(() => setPreview(p => !p), [])
-  const endPreview = useCallback(() => setPreview(false), [])
+  const togglePreview = useCallback(() => setPreview(p => !p), [setPreview])
   return <>
     {
       preview
-      ? <PreviewWrapper onClick={endPreview}><CommentHighlight content={content} /></PreviewWrapper>
+      ? <PreviewWrapper onClick={togglePreview}><CommentHighlight content={content} /></PreviewWrapper>
       : <CommentField disabled={disabled} autoFocus={autoFocus} content={content} onChange={setContent} />
     }
     <Button onClick={togglePreview} disabled={!content}>{preview ? '編集に戻る' : 'プレビュー'}</Button>

@@ -9,7 +9,7 @@ import {
 } from '@material-ui/core'
 import CommentIcon from '@material-ui/icons/Comment'
 import { CodeIdContext, LineNumberContext } from '../context'
-import { NewCommentForm, UpdateCommentForm } from '../comment/CommentForm'
+import { NewCommentForm } from '../comment/CommentForm'
 import Comment from '../comment/Comment'
 
 const useStyles = makeStyles({
