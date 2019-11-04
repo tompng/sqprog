@@ -63,7 +63,7 @@ const CommentForm: React.FC<{ mode: 'create' | 'update'; autoFocus?: boolean; in
     }
     <Button onClick={togglePreview} disabled={!content}>{preview ? '編集に戻る' : 'プレビュー'}</Button>
     { cancel && <Button disabled={disabled} onClick={handleCancel}>キャンセル</Button> }
-    { mode === 'create' && <Button disabled={disabled} onClick={handleSubmit} color="primary">送信</Button>}
+    { mode === 'create' && <Button disabled={disabled || !content} onClick={handleSubmit} color="primary">送信</Button>}
     { mode === 'update' && <Button disabled={disabled} onClick={handleSubmit} color={content ? 'primary' : 'secondary'}>{content ? '保存' : '削除'}</Button>}
   </>
 }
