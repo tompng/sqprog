@@ -41,6 +41,7 @@ export interface TypeQuestion {
   id: number
   uid: string
   mode: ("normal" | "terrible")
+  title: string
   description: string
   resolved: boolean
   createdAt: string
@@ -163,11 +164,12 @@ export type TypeQuestionQuery = TypeQuestionStandaloneFields | Readonly<TypeQues
     { [key in keyof TypeQuestionQueryBase]?: key extends '*' ? true : TypeQuestionQueryBase[key] | TypeQuestionAliasFieldQuery }
     & { [key: string]: TypeQuestionAliasFieldQuery | NonAliasQuery }
   )
-export type TypeQuestionStandaloneFields = 'id' | 'uid' | 'mode' | 'description' | 'resolved' | 'createdAt' | 'questionComments' | 'codes' | 'commentCount' | 'unreads' | 'voteSummary' | 'myVote' | '*'
+export type TypeQuestionStandaloneFields = 'id' | 'uid' | 'mode' | 'title' | 'description' | 'resolved' | 'createdAt' | 'questionComments' | 'codes' | 'commentCount' | 'unreads' | 'voteSummary' | 'myVote' | '*'
 export type TypeQuestionAliasFieldQuery =
   | { field: 'id' }
   | { field: 'uid' }
   | { field: 'mode' }
+  | { field: 'title' }
   | { field: 'description' }
   | { field: 'resolved' }
   | { field: 'createdAt' }
@@ -182,6 +184,7 @@ export interface TypeQuestionQueryBase {
   id: true
   uid: true
   mode: true
+  title: true
   description: true
   resolved: true
   createdAt: true

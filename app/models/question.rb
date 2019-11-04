@@ -12,7 +12,7 @@ class Question < ApplicationRecord
   validates :mode, inclusion: MODES
   before_validation { self.mode ||= :normal }
 
-  serializer_field :id, :uid, :mode, :description, :resolved, :createdAt
+  serializer_field :id, :uid, :mode, :title, :description, :resolved, :createdAt
   serializer_field :mode, type: MODES
   serializer_field :questionComments, :codes
   serializer_field :commentCount, count_of: :comments
@@ -21,6 +21,11 @@ class Question < ApplicationRecord
 
   def self.can_create?
     unresolved.count < 20
+  end
+
+  def suggest_title
+    base = [description, *codes.flat_map { |c| [c.file_name, c.code] }]
+    base.join(' ').strip.gsub(/[ \n]+/, ' ')[0, 128]
   end
 
   def set_unread(uid, time)

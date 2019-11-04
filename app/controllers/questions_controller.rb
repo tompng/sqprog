@@ -16,13 +16,16 @@ class QuestionsController < ApplicationController
     raise unless Question.can_create?
     raise if Question.where(uid: current_user_uid).where('created_at > ?', 1.minutes.ago).exists?
     question = Question.new description: create_params[:description], uid: current_user_uid
+    title_base = [question.description]
     create_params[:codes].each do |code_params|
       code = code_params[:code].to_s
       next if code.empty?
       file_name = code_params[:file_name].to_s.strip.presence
+      title_base << file_name << code
       question.codes.new file_name: file_name || 'untitled', code: code
     end
     raise if question.codes.empty?
+    question.title = question.suggest_title
     question.save!
     question.unreads.create! uid: :ikachan, time: question.created_at
     render json: { id: question.id }
