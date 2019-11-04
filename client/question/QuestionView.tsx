@@ -36,7 +36,7 @@ export const QuestionView: React.FC<RouteComponentProps<{ id: string }>> = ({ ma
     }
     <hr/>
     {
-      question.questionComments.map(c => <Comment key={c.id} {...c} />)
+      question.questionComments.map(c => <Comment key={c.id} commentId={c.id} {...c} myVote={c.myVote && c.myVote.value} voteSummary={c.voteSummary} />)
     }
     <NewCommentForm {...({} as any)}/>
   </QuestionContext.Provider>

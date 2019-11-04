@@ -6,41 +6,43 @@ const svgOpenTag = '<svg width="100px" height="100px" version="1.1" xmlns="http:
 const svgCloseTag = '</svg>'
 type Point = { x: number; y: number }
 
-function IconGood() {
+function IconUp() {
   svgOpenTag
-  return svgOpenTag + `
-    <path fill="#4f4" d="${coordsToPath(coords, { rotate: -Math.PI / 2, scale: 1 })}" />
-    <path fill="#464" d="${coordsToPath(eyeOuterCoords, { rotate: -Math.PI / 2, scale: 1 })}" />
-    <circle fill="#afa" cx="${50 - 50 * eyeCircleOuter.y}" cy="${50 - 50 * eyeCircleOuter.x}" r="${50 * eyeCircleOuter.r}" />
-    <circle fill="#afa" cx="${50 + 50 * eyeCircleOuter.y}" cy="${50 - 50 * eyeCircleOuter.x}" r="${50 * eyeCircleOuter.r}" />
-    <circle fill="#464" cx="${50 - 50 * eyeCircleInner.y}" cy="${50 - 50 * eyeCircleInner.x}" r="${50 * eyeCircleInner.r}" />
-    <circle fill="#464" cx="${50 + 50 * eyeCircleInner.y}" cy="${50 - 50 * eyeCircleInner.x}" r="${50 * eyeCircleInner.r}" />
-    <circle fill="#afa" cx="42" cy="56" r="2" />
-    <circle fill="#afa" cx="64" cy="56" r="2" />
-  ` + svgCloseTag
+  return [
+    svgOpenTag,
+    `<path fill="#8f8" d="${coordsToPath(coords, { rotate: -Math.PI / 2, scale: 1 })}" />`,
+    `<path fill="#8a8" d="${coordsToPath(eyeOuterCoords, { rotate: -Math.PI / 2, scale: 1 })}" />`,
+    `<circle fill="#8f8" cx="${50 - 50 * eyeCircleOuter.y}" cy="${50 - 50 * eyeCircleOuter.x}" r="${50 * eyeCircleOuter.r}" />`,
+    `<circle fill="#8f8" cx="${50 + 50 * eyeCircleOuter.y}" cy="${50 - 50 * eyeCircleOuter.x}" r="${50 * eyeCircleOuter.r}" />`,
+    `<circle fill="#8a8" cx="${50 - 50 * eyeCircleInner.y}" cy="${50 - 50 * eyeCircleInner.x}" r="${50 * eyeCircleInner.r}" />`,
+    `<circle fill="#8a8" cx="${50 + 50 * eyeCircleInner.y}" cy="${50 - 50 * eyeCircleInner.x}" r="${50 * eyeCircleInner.r}" />`,
+    // '<circle fill="#afa" cx="42" cy="56" r="2" />',
+    // '<circle fill="#afa" cx="64" cy="56" r="2" />',
+    svgCloseTag
+  ].join('')
 }
 
-function IconBad() {
-  return svgOpenTag + `
-    <path fill="#f44" d="${coordsToPath(coords, { rotate: Math.PI / 2, scale: 1 })}" />
-    <path fill="#844" d="${coordsToPath(eyeOuterCoords, { rotate: Math.PI / 2, scale: 1 })}" />
-    <g transform="translate(50,38) rotate(24)">
-      <rect fill="#400" x="-22" y="-3" width="44" height="6" />
-    </g>
-    <g transform="translate(50,38) rotate(-24)">
-      <rect fill="#400" x="-22" y="-3" width="44" height="6" />
-    </g>
-  ` + svgCloseTag
+function IconDown() {
+  return [
+    svgOpenTag,
+    `<path fill="#f88" d="${coordsToPath(coords, { rotate: Math.PI / 2, scale: 1 })}" />`,
+    `<path fill="#a88" d="${coordsToPath(eyeOuterCoords, { rotate: Math.PI / 2, scale: 1 })}" />`,
+    '<g transform="translate(50,38) rotate(24)"><rect fill="#444" x="-22" y="-3" width="44" height="6" /></g>',
+    '<g transform="translate(50,38) rotate(-24)"><rect fill="#444" x="-22" y="-3" width="44" height="6" /></g>',
+    svgCloseTag,
+  ].join('')
 }
 
 function IconForward() {
   const outLoc = { x: 0.1, y: 0, rotate: Math.PI / 6, scale: 0.9 }
   const inLoc = { x: 0.1, y: 0, rotate: -Math.PI / 6, scale: 0.6 }
-  return svgOpenTag + `
-    <path fill="#8af" d="${coordsToPath(coords, outLoc)}" />
-    <path fill="#fab" d="${coordsToPath(coords, inLoc)}" />
-    <path fill="#cad" d="${coordsToPath(eyeOuterCoords, inLoc)}" />
-  ` + svgCloseTag
+  return [
+    svgOpenTag,
+    `<path fill="#8af" d="${coordsToPath(coords, outLoc)}" />`,
+    `<path fill="#fab" d="${coordsToPath(coords, inLoc)}" />`,
+    `<path fill="#cad" d="${coordsToPath(eyeOuterCoords, inLoc)}" />`,
+    svgCloseTag
+  ].join('')
 }
 
 function IconRotate() {
@@ -56,16 +58,43 @@ function IconRotate() {
   }
   const loc1 = { x: 0, y: 0, rotate: 2 * Math.PI / 3, scale: 1 }
   const loc2 = { x: 0, y: 0, rotate: 5 * Math.PI / 3, scale: 1 }
-  return svgOpenTag + `
-    <path fill="#fb0" d="${coordsToPath(rotcoords, loc1)}" />
-    <path fill="#fd0" d="${coordsToPath(roteyes, loc1)}" />
-    <path fill="#ff0" d="${coordsToPath(rotcoords, loc2)}" />
-    <path fill="#fd0" d="${coordsToPath(roteyes, loc2)}" />
-  ` + svgCloseTag
+  return [
+    svgOpenTag,
+    `<path fill="#fb0" d="${coordsToPath(rotcoords, loc1)}" />`,
+    `<path fill="#fd0" d="${coordsToPath(roteyes, loc1)}" />`,
+    `<path fill="#ff0" d="${coordsToPath(rotcoords, loc2)}" />`,
+    `<path fill="#fd0" d="${coordsToPath(roteyes, loc2)}" />`,
+    svgCloseTag
+  ].join('')
 }
-
-
-(window as any).svg = IconGood() + IconBad() + IconForward() + IconRotate()
+function IconSplat() {
+  const coords: Point[] = []
+  function p(r: number, th: number) {
+    return { x: r * Math.cos(th), y: r * Math.sin(th) }
+  }
+  for (let i = 0; i < 9; i++) {
+    const th = 2 * Math.PI * i / 9 + 3 + 0.1 * Math.cos(i * 32 + 1)
+    const rmin = 0.6
+    const rr = 0.15 + 0.075 * Math.cos(i * 123 + 4)
+    const ta = 0.2 * Math.sin(i * 54 + 32)
+    coords.push(p(rmin, th - 0.1))
+    coords.push(p(rmin + rr, th - 0.1 - rr * 0.2 - ta * rr))
+    coords.push(p(rmin + rr * 1.7, th - ta * rr))
+    coords.push(p(rmin + rr, th + 0.1 + rr * 0.2 - ta * rr))
+    coords.push(p(rmin, th + 0.1))
+    coords.push(p(rmin - 0.1, th + Math.PI / 9))
+  }
+  return [
+    svgOpenTag,
+    `<path fill="#44f" d="${coordsToPath(coords)}" />`,
+    svgCloseTag
+  ].join('')
+}
+export const VoteUpSVG = IconUp()
+export const VoteDownSVG = IconDown()
+export const VoteForwardSVG = IconForward()
+export const VoteRotateSVG = IconRotate()
+export const VoteSplatSVG = IconSplat()
 
 function coordsToPath(baseCoords: Point[], { x: baseX, y: baseY, rotate, scale }: { x?: number; y?: number; rotate?: number; scale?: number } = {} ) {
   const cos = Math.cos(rotate || 0)

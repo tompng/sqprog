@@ -50,10 +50,13 @@ const useStyles = makeStyles({
   }
 })
 
+type VoteValue = 'up' | 'down' | 'forward' | 'rotate'
 type Comment = {
   id: number
   uid: string
   content: string
+  myVote: { value: VoteValue } | null
+  voteSummary: { [key in VoteValue]?: number | null }
 }
 type CodeProps = {
   codeId: number
@@ -122,7 +125,7 @@ const CodeLineBase: React.FC<{ lineNumber: number; comments?: Comment[]; html: s
         <td className={classes.codeCol}>
           <CommentGroup>
             {
-              comments && comments.map(c => <Comment key={c.id} {...c} />)
+              comments && comments.map(c => <Comment key={c.id} commentId={c.id} {...c} myVote={c.myVote && c.myVote.value}/>)
             }
             {!commentOpen && <Button onClick={openComment}>コメント</Button>}
             {commentOpen && <NewCommentForm cancel={cancel} />}
