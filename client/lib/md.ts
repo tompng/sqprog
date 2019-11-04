@@ -37,8 +37,8 @@ export function mdparse(content: string) {
             })
           }else {
             const text = ss.join('')
-            const idx = multiline && text.indexOf('\n')
-            if (idx && idx > 0) {
+            const idx = multiline ? text.indexOf('\n') : -1
+            if (idx >= 0) {
               currentLine.push({
                 type: 'code',
                 multiline: true,

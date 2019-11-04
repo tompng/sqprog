@@ -4,12 +4,23 @@ const alias: Record<string, string> = {
   tsx: 'jsx'
 }
 
+let escapeHelperElement: HTMLDivElement | null = null
+function htmlEscape(text: string) {
+  if (!escapeHelperElement) {
+    escapeHelperElement = document.createElement('div')
+  }
+  escapeHelperElement.textContent = text
+  const html = escapeHelperElement.innerHTML
+  escapeHelperElement.textContent = ''
+  return html
+}
+
 export function highlightCode(lang: string, code: string) {
   lang = alias[lang] || lang
   try {
     return highlight(lang, code).value
   } catch {
-    return code
+    return htmlEscape(code)
   }
 }
 
