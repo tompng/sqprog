@@ -23,6 +23,7 @@ const Comment: React.FC<CommentProps> = ({ commentId, uid, content, myVote, vote
   const [editing, setEditing] = useState(false)
   const [tmpContent, setTmpContent] = useState<string | null>(null)
   const currentUser = useContext(CurrentUserContext)
+  const question = useContext(QuestionContext)
   const mountedRef = useRef(true)
   useEffect(() => () => { mountedRef.current = false }, [mountedRef])
   const handleClick = (event: React.MouseEvent) => {
@@ -40,6 +41,13 @@ const Comment: React.FC<CommentProps> = ({ commentId, uid, content, myVote, vote
   const handleClose = useCallback(() => {
     setAnchorEl(null)
   }, [setAnchorEl])
+  const handleDelete = useCallback(async () => {
+    const confirmed = confirm('削除しますか?')
+    setAnchorEl(null)
+    if (!confirmed) return
+    await commentApi.destroy(commentId)
+    question.reload()
+  }, [question, commentId])
   return <CommentWrapper>
     <CommentUserInfo>
       <UserIcon uid={uid} size={56} />
@@ -51,14 +59,14 @@ const Comment: React.FC<CommentProps> = ({ commentId, uid, content, myVote, vote
         : <CommentHighlight content={tmpContent || content} />
       }
     </CommentBody>
-    { (currentUser === 'ikachan' || currentUser === uid) &&
+    { !editing && (currentUser === 'ikachan' || currentUser === uid) &&
       <CommentMenu>
         <IconButton onClick={handleClick}>
           <MoreVertIcon />
         </IconButton>
         <Menu anchorEl={anchorEl} open={!!anchorEl} onClose={handleClose}>
           <MenuItem onClick={handleEditStart}><EditIcon />編集</MenuItem>
-          <MenuItem onClick={handleClose}><DeleteIcon />削除</MenuItem>
+          <MenuItem onClick={handleDelete}><DeleteIcon />削除</MenuItem>
         </Menu>
       </CommentMenu>
     }

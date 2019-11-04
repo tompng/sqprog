@@ -46,6 +46,13 @@ const CommentForm: React.FC<{ mode: 'create' | 'update'; initialContent?: string
       setPreview(false)
     }
   }, [submit, content, setContent, setDisabled, setPreview])
+  const handleCancel = useCallback(() => {
+    if (!cancel) return
+    if (content && content !== initialContent) {
+      if (confirm('入力中のようです。編集を続けますか？')) return
+    }
+    cancel()
+  }, [cancel, content, initialContent])
   const togglePreview = useCallback(() => setPreview(p => !p), [])
   const endPreview = useCallback(() => setPreview(false), [])
   return <>
@@ -55,7 +62,7 @@ const CommentForm: React.FC<{ mode: 'create' | 'update'; initialContent?: string
       : <CommentField disabled={disabled} content={content} onChange={setContent} />
     }
     <Button onClick={togglePreview} disabled={!content}>{preview ? '編集に戻る' : 'プレビュー'}</Button>
-    { cancel && <Button disabled={disabled} onClick={cancel}>キャンセル</Button> }
+    { cancel && <Button disabled={disabled} onClick={handleCancel}>キャンセル</Button> }
     { mode === 'create' && <Button disabled={disabled} onClick={handleSubmit} color="primary">送信</Button>}
     { mode === 'update' && <Button disabled={disabled} onClick={handleSubmit} color={content ? 'primary' : 'secondary'}>{content ? '保存' : '削除'}</Button>}
   </>
