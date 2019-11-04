@@ -1,13 +1,12 @@
 import React, { useState, useCallback } from 'react'
 import { question } from '../api'
-import { CodeForm, CodeAddButton } from '../code/CodeForm'
+import { CodeForm } from '../code/CodeForm'
 import styled from 'styled-components'
 import { compact } from 'lodash'
-import { FormControl, TextField, Button } from '@material-ui/core'
-import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab'
-import SendIcon from '@material-ui/icons/Send'
+import { FormControl, TextField, Button, MenuItem, Select } from '@material-ui/core'
+import AddIcon from '@material-ui/icons/Add'
 import useRouter from 'use-react-router'
-
+import { RightUpSVG, svgImgUrl } from '../lib/ikachan'
 type Code = {
   code: string
   fileName: string
@@ -31,7 +30,7 @@ export const NewQuestionForm: React.FC = () => {
     (e: React.ChangeEvent<HTMLTextAreaElement>) => setDescription(e.target.value),
     [setDescription]
   )
-  const onModeChange = useCallback((_, v: Mode) => setMode(v), [setMode])
+  const onModeChange = useCallback((e: React.ChangeEvent<{ value: unknown }>) => setMode(e.target.value as Mode), [setMode])
   const [codes, setCodes] = useState<CodeWithId[]>(() => [...Array(2)].map(() => newCode()))
   const onCodeChange = useCallback((id: number | string, codeObject: Code | null) => {
     setCodes(codes => compact(codes.map(code => code.id === id ? codeObject && { id, ...codeObject } : code)))
@@ -50,17 +49,13 @@ export const NewQuestionForm: React.FC = () => {
     }
   }, [mode, description, codes])
   return <>
-    <div>
-      いかちゃんにコードを送りつけよう
-      <ToggleButtonGroup
-        value={mode}
-        onChange={onModeChange}
-        exclusive>
-        <ToggleButton value="normal" color="primary" disabled={sending}>通常モード</ToggleButton>
-        <ToggleButton value="terrible" color="secondary" disabled={sending}>理不尽モード</ToggleButton>
-      </ToggleButtonGroup>
-      <Button disabled={sending} onClick={send}><SendIcon /></Button>
-    </div>
+    <NewQuestionHeader>
+      <div>いかちゃんにコードを送りつけよう</div>
+      <Select value={mode} onChange={onModeChange}>
+        <MenuItem value="normal">通常モード</MenuItem>
+        <MenuItem value="terrible">理不尽モード</MenuItem>
+      </Select>
+    </NewQuestionHeader>
     <FormWrapper>
       <FormControl fullWidth>
         <TextField
@@ -82,7 +77,36 @@ export const NewQuestionForm: React.FC = () => {
       ))
     }
     <FormWrapper>
-      <CodeAddButton onClick={addCode} disabled={sending} />
+      <Button onClick={addCode} disabled={sending}>
+        <AddIcon />ファイルを追加
+      </Button>
     </FormWrapper>
+    <SendButtonWrapper>
+      <Button fullWidth disabled={sending} onClick={send}>
+        <SendButtonInner>送信</SendButtonInner>
+      </Button>
+    </SendButtonWrapper>
   </>
 }
+const NewQuestionHeader = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+`
+
+const SendButtonWrapper = styled.div`
+  margin-top: 40px;
+  margin-bottom: 40px;
+`
+const SendButtonInner = styled.div`
+  font-size: 80px;
+  height: 128px;
+  line-height: 128px;
+  padding-left: 128px;
+  font-weight: bold;
+  color: #8f8;
+  background-image: ${svgImgUrl(RightUpSVG)};
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: 0% 50%;
+`

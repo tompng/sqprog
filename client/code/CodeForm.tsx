@@ -82,11 +82,3 @@ export const CodeForm: React.FC<CodeFieldProps> = ({ id, fileName, code, onChang
     </FormControl>
   </Paper>)
 }
-
-export const CodeAddButton: React.FC<{ onClick: () => void; disabled?: boolean }> = ({ onClick, disabled }) => (
-  <Paper>
-    <Button fullWidth onClick={onClick} disabled={disabled}>
-      <AddIcon />
-    </Button>
-  </Paper>
-)

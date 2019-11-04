@@ -88,11 +88,24 @@ function IconSplat() {
     svgCloseTag
   ].join('')
 }
+function IconRightUp() {
+  return [
+    svgOpenTag,
+    `<path fill="#8f8" d="${coordsToPath(coords, { rotate: -Math.PI / 5, scale: 0.9 })}" />`,
+    svgCloseTag
+  ].join('')
+}
+
 export const VoteUpSVG = IconUp()
 export const VoteDownSVG = IconDown()
 export const VoteForwardSVG = IconForward()
 export const VoteRotateSVG = IconRotate()
 export const VoteSplatSVG = IconSplat()
+export const RightUpSVG = IconRightUp()
+
+export function svgImgUrl(svg: string) {
+  return `url('data:image/svg+xml,${svg.replace(/#/g, '%23')}')`
+}
 
 function coordsToPath(baseCoords: Point[], { x: baseX, y: baseY, rotate, scale }: { x?: number; y?: number; rotate?: number; scale?: number } = {} ) {
   const cos = Math.cos(rotate || 0)
@@ -248,7 +261,6 @@ export function applyRippleStyle() {
   .MuiTouchRipple-child{
     background-image: url('data:image/svg+xml,${svgOpenTag}<path fill="rgba(255, 255, 255, 0.5)" d="${path}"/>${svgCloseTag}');
     background-size: contain;
-    border-radius: 0;
   }
   `
 }

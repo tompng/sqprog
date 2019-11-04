@@ -2,7 +2,7 @@ import React, { useMemo, useState, useCallback, useContext, useRef, useEffect } 
 import styled from 'styled-components'
 import AddIcon from '@material-ui/icons/Add'
 import { comment as commentApi, question as questionApi } from '../api'
-import { VoteUpSVG, VoteDownSVG, VoteForwardSVG, VoteRotateSVG, VoteSplatSVG } from '../lib/ikachan'
+import { VoteUpSVG, VoteDownSVG, VoteForwardSVG, VoteRotateSVG, VoteSplatSVG, svgImgUrl } from '../lib/ikachan'
 import { QuestionContext } from '../context'
 import {
   IconButton,
@@ -12,9 +12,6 @@ import {
 export type VoteType = 'up' | 'down' | 'forward' | 'rotate'
 export type VoteSummary = { [key in VoteType]?: number | null }
 
-function svgImgUrl(svg: string) {
-  return `url('data:image/svg+xml,${svg.replace(/#/g, '%23')}')`
-}
 const useVoteStyles = makeStyles({
   icon: {
     width: '24px',
