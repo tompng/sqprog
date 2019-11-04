@@ -16,8 +16,6 @@ function IconUp() {
     `<circle fill="#8f8" cx="${50 + 50 * eyeCircleOuter.y}" cy="${50 - 50 * eyeCircleOuter.x}" r="${50 * eyeCircleOuter.r}" />`,
     `<circle fill="#8a8" cx="${50 - 50 * eyeCircleInner.y}" cy="${50 - 50 * eyeCircleInner.x}" r="${50 * eyeCircleInner.r}" />`,
     `<circle fill="#8a8" cx="${50 + 50 * eyeCircleInner.y}" cy="${50 - 50 * eyeCircleInner.x}" r="${50 * eyeCircleInner.r}" />`,
-    // '<circle fill="#afa" cx="42" cy="56" r="2" />',
-    // '<circle fill="#afa" cx="64" cy="56" r="2" />',
     svgCloseTag
   ].join('')
 }
@@ -238,6 +236,9 @@ export function randomString(){
   while (s.length < 64) s += Math.random().toString(16).substr(2)
   return s.substring(0, 64)
 }
+
+;(window as any).genIconSVG = genIconSVG
+;(window as any).randomString = randomString
 
 export function applyRippleStyle() {
   const path = coordsToPath(coords, { rotate: -Math.PI / 3, scale: 0.8 })

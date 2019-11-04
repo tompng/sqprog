@@ -9,7 +9,7 @@ import {
 import { comment as commentApi } from '../api'
 import { QuestionContext, CodeIdContext, LineNumberContext } from '../context'
 
-const CommentField: React.FC<{ content: string; disabled?: boolean; onChange: (c: string) => void }> = ({ content, disabled, onChange }) => {
+const CommentField: React.FC<{ content: string; autoFocus?: boolean; disabled?: boolean; onChange: (c: string) => void }> = ({ content, disabled, autoFocus, onChange }) => {
   const handleChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
     onChange(e.target.value)
   }, [onChange])
@@ -24,13 +24,13 @@ const CommentField: React.FC<{ content: string; disabled?: boolean; onChange: (c
       value={content}
       disabled={disabled}
       onChange={handleChange}
-      autoFocus
+      autoFocus={autoFocus}
       />
     </FormControl>
   )
 }
 
-const CommentForm: React.FC<{ mode: 'create' | 'update'; initialContent?: string; submit: (content: string) => Promise<boolean>; cancel?: () => void }> = ({ initialContent, mode, submit, cancel }) => {
+const CommentForm: React.FC<{ mode: 'create' | 'update'; autoFocus?: boolean; initialContent?: string; submit: (content: string) => Promise<boolean>; cancel?: () => void }> = ({ initialContent, mode, submit, cancel, autoFocus }) => {
   const [content, setContent] = useState(initialContent || '')
   const [preview, setPreview] = useState(false)
   const [disabled, setDisabled] = useState(false)
@@ -59,7 +59,7 @@ const CommentForm: React.FC<{ mode: 'create' | 'update'; initialContent?: string
     {
       preview
       ? <PreviewWrapper onClick={endPreview}><CommentHighlight content={content} /></PreviewWrapper>
-      : <CommentField disabled={disabled} content={content} onChange={setContent} />
+      : <CommentField disabled={disabled} autoFocus={autoFocus} content={content} onChange={setContent} />
     }
     <Button onClick={togglePreview} disabled={!content}>{preview ? '編集に戻る' : 'プレビュー'}</Button>
     { cancel && <Button disabled={disabled} onClick={handleCancel}>キャンセル</Button> }
@@ -72,7 +72,7 @@ const PreviewWrapper = styled.div`
   min-height: 4em;
   cursor: pointer;
 `
-export const NewCommentForm: React.FC<{ cancel: () => void }> = ({ cancel }) => {
+export const NewCommentForm: React.FC<{ autoFocus?: boolean; cancel: () => void }> = ({ autoFocus, cancel }) => {
   const question = useContext(QuestionContext)
   const codeId = useContext(CodeIdContext)
   const lineNumber = useContext(LineNumberContext)
@@ -88,11 +88,11 @@ export const NewCommentForm: React.FC<{ cancel: () => void }> = ({ cancel }) => 
     } catch { }
     return true
   }, [question, codeId, lineNumber])
-  return <CommentForm mode='create' submit={submit} cancel={cancel}/>
+  return <CommentForm mode='create' autoFocus={autoFocus} submit={submit} cancel={cancel}/>
 }
 
 
-export const UpdateCommentForm: React.FC<{ content: string; commentId: number; onEditUpdate: (v: string) => void; onEditDone: () => void }> = ({ commentId, content, onEditUpdate, onEditDone }) => {
+export const UpdateCommentForm: React.FC<{ autoFocus?: boolean; content: string; commentId: number; onEditUpdate: (v: string) => void; onEditDone: () => void }> = ({ autoFocus, commentId, content, onEditUpdate, onEditDone }) => {
   const question = useContext(QuestionContext)
   const submit = useCallback(async (content: string) => {
     try {
@@ -111,5 +111,5 @@ export const UpdateCommentForm: React.FC<{ content: string; commentId: number; o
     } catch { }
     return true
   }, [onEditDone, commentId])
-  return <CommentForm mode='update' initialContent={content} submit={submit} cancel={onEditDone} />
+  return <CommentForm mode='update' autoFocus={autoFocus} initialContent={content} submit={submit} cancel={onEditDone} />
 }

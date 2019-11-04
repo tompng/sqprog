@@ -13,12 +13,17 @@ import { NewCommentForm, UpdateCommentForm } from '../comment/CommentForm'
 import Comment from '../comment/Comment'
 
 const useStyles = makeStyles({
+  paper: {
+    marginBottom: '2em',
+    background: '#eee'
+  },
   table: {
     borderSpacing: 0,
-    width: '100%'
+    width: '100%',
   },
   codeCol: {
-    paddingLeft: '0.4em'
+    paddingLeft: '0.4em',
+    paddingRight: '0.4em'
   },
   commentableRow: {
     cursor: 'pointer',
@@ -68,9 +73,15 @@ type CodeProps = {
     comments: Comment[]
   }[]
 }
+const FileName = styled.div`
+  padding: 4px;
+  color: gray;
+  font-weight: bold;
+  border-bottom: 1px solid silver;
+`
 const ScrollableWrapper = styled.div`
-width: 100%;
-overflow-x: auto;
+  width: 100%;
+  overflow-x: auto;
 `
 export const Code: React.FC<CodeProps> = ({ codeId, fileName, code, threads }) => {
   const lang = useMemo(() => {
@@ -83,9 +94,8 @@ export const Code: React.FC<CodeProps> = ({ codeId, fileName, code, threads }) =
     return new Map(threads.map(t => [t.lineNumber, t.comments]))
   }, [threads])
   return <CodeIdContext.Provider value={codeId}>
-    <Paper>
-      <b>file:{fileName}</b>
-      <hr />
+    <Paper className={classes.paper}>
+      <FileName>file:&nbsp;{fileName}</FileName>
       <ScrollableWrapper>
         <table className={classes.table}>
           <tbody>
@@ -103,9 +113,11 @@ export const Code: React.FC<CodeProps> = ({ codeId, fileName, code, threads }) =
 }
 
 const CommentGroup = styled.div`
-  width: calc(100vw - 5em);
+  max-width: calc(100vw - 4.4em);
   border-radius: 4px;
   border: 1px solid silver;
+  margin-bottom: 0.4em;
+  background: white;
 `
 
 const CodeLineBase: React.FC<{ lineNumber: number; comments?: Comment[]; html: string }> = ({ lineNumber, html, comments }) => {
@@ -129,7 +141,7 @@ const CodeLineBase: React.FC<{ lineNumber: number; comments?: Comment[]; html: s
               comments && comments.map(c => <Comment key={c.id} commentId={c.id} {...c} myVote={c.myVote && c.myVote.value}/>)
             }
             {!commentOpen && <Button onClick={openComment}><CommentIcon />コメント</Button>}
-            {commentOpen && <NewCommentForm cancel={cancel} />}
+            {commentOpen && <NewCommentForm autoFocus cancel={cancel} />}
           </CommentGroup>
         </td>
       </tr>
