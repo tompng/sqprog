@@ -5,7 +5,6 @@ import {
   makeStyles
 } from '@material-ui/core'
 import CloseIcon from '@material-ui/icons/Close'
-import AddIcon from '@material-ui/icons/Add'
 function useInputID() { return useMemo(() => String(Math.random()), []) }
 
 const fileTypes: Record<string, string> = {
@@ -34,6 +33,8 @@ const useStyles = makeStyles(theme => ({
     fontFamily: 'Courier, Osaka-Mono, monospace'
   },
   paper: {
+    background: '#eee',
+    marginBottom: '16px',
     padding: theme.spacing(1)
   }
 }))

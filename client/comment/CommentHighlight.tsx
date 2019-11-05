@@ -31,6 +31,11 @@ const useStyles = makeStyles(theme => ({
   },
   strike: {
     textDecoration: 'line-through'
+  },
+  line: {
+    whiteSpace: 'pre',
+    lineHeight: '1.2em',
+    minHeight: '1.2em'
   }
 }))
 
@@ -39,7 +44,7 @@ const CommentHighlight: React.FC<{ content: string }> = ({ content }) => {
   const lines = mdparse(content)
   return <>
   {
-    lines.map((line, lineIndex) => (<div key={lineIndex}>{
+    lines.map((line, lineIndex) => (<div key={lineIndex} className={classes.line}>{
       line.map((e, key) => {
         if (typeof e === 'string') {
           return <span key={key}>{e}</span>

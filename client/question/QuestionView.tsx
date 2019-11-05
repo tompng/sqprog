@@ -5,6 +5,7 @@ import { Code } from '../code/Code'
 import { useFetchedState } from '../api'
 import { NewCommentForm } from '../comment/CommentForm'
 import Comment from '../comment/Comment'
+import CommentHighlight from '../comment/CommentHighlight'
 import { QuestionContext, CurrentUserContext } from '../context'
 import UserIcon from '../components/UserIcon'
 import Vote from '../components/Vote'
@@ -85,7 +86,7 @@ export const QuestionView: React.FC<RouteComponentProps<{ id: string }>> = ({ ma
           question.mode === 'terrible' &&
           <div><TerribleModeTag>理不尽なコメントをリクエスト</TerribleModeTag></div>
         }
-        {question.description || '説明: なし'}
+        <CommentHighlight content={question.description || '説明: なし'} />
       </CommentDescription>
       <VoteWrapper>
         <Vote questionId={question.id} myVote={question.myVote && question.myVote.value} voteSummary={question.voteSummary} />

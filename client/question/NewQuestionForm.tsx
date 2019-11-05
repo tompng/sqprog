@@ -7,6 +7,8 @@ import { FormControl, TextField, Button, MenuItem, Select } from '@material-ui/c
 import AddIcon from '@material-ui/icons/Add'
 import useRouter from 'use-react-router'
 import { RightUpSVG, svgImgUrl } from '../lib/ikachan'
+import CommentHighlight from '../comment/CommentHighlight'
+
 type Code = {
   code: string
   fileName: string
@@ -19,6 +21,10 @@ function newCode(): CodeWithId {
 }
 const FormWrapper = styled.div`
   margin-bottom: 8px;
+`
+const DescriptionWrapper = styled.div`
+  margin-top: 8px;
+  margin-bottom: 24px;
 `
 type Mode = 'normal' | 'terrible'
 export const NewQuestionForm: React.FC = () => {
@@ -48,6 +54,8 @@ export const NewQuestionForm: React.FC = () => {
       alert('error')
     }
   }, [mode, description, codes])
+  const [preview, setPreview] = useState(false)
+  const togglePreview = useCallback(() => setPreview(p => !p), [setPreview])
   return <>
     <NewQuestionHeader>
       <div>いかちゃんにコードを送りつけよう</div>
@@ -56,19 +64,28 @@ export const NewQuestionForm: React.FC = () => {
         <MenuItem value="terrible">理不尽モードで見てもらう</MenuItem>
       </Select>
     </NewQuestionHeader>
-    <FormWrapper>
-      <FormControl fullWidth>
-        <TextField
-        placeholder="説明..."
-        multiline
-        inputProps={{ spellCheck: false }}
-        variant="standard"
-        value={description}
-        disabled={sending}
-        onChange={onDescChange}
-        />
-      </FormControl>
-    </FormWrapper>
+    <DescriptionWrapper>
+      説明文 <Button size="small" color="primary" onClick={togglePreview}>{preview ? '編集に戻る' : 'プレビュー'}</Button>
+      { !preview &&
+        <FormControl fullWidth>
+          <TextField
+          placeholder="..."
+          multiline
+          inputProps={{ spellCheck: false }}
+          variant="standard"
+          value={description}
+          disabled={sending}
+          onChange={onDescChange}
+          autoFocus
+          />
+        </FormControl>
+      }
+      { preview &&
+        <PreviewWrapper onClick={togglePreview}>
+          <CommentHighlight content={description}/>
+        </PreviewWrapper>
+      }
+    </DescriptionWrapper>
     {
       codes.map(({ id, fileName, code }) => (
         <FormWrapper key={id}>
@@ -82,12 +99,18 @@ export const NewQuestionForm: React.FC = () => {
       </Button>
     </FormWrapper>
     <SendButtonWrapper>
-      <Button fullWidth disabled={sending} onClick={send}>
+      <Button variant="outlined" color="default" disabled={sending} onClick={send}>
         <SendButtonInner>送信</SendButtonInner>
       </Button>
     </SendButtonWrapper>
   </>
 }
+const PreviewWrapper = styled.div`
+  border-bottom: 1px solid gray;
+  cursor: pointer;
+  min-height: 2em;
+`
+
 const NewQuestionHeader = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -95,18 +118,18 @@ const NewQuestionHeader = styled.div`
 `
 
 const SendButtonWrapper = styled.div`
-  margin-top: 40px;
+  margin-top: 64px;
   margin-bottom: 40px;
+  text-align: center;
 `
 const SendButtonInner = styled.div`
-  font-size: 80px;
-  height: 128px;
-  line-height: 128px;
-  padding-left: 128px;
+  font-size: 64px;
+  line-height: 96px;
+  padding-left: 96px;
   font-weight: bold;
   color: #8f8;
   background-image: ${svgImgUrl(RightUpSVG)};
-  background-size: contain;
+  background-size: 96px 96px;
   background-repeat: no-repeat;
   background-position: 0% 50%;
 `
