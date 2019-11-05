@@ -10,12 +10,18 @@ export const QuestionsView: React.FC = () => {
   const mode: Mode = 'all'
   const limit = 10
   const offset = 0
-  const [questions, , reload] = useFetchedState({
+  const [result, , reload] = useFetchedState({
     field: 'questions',
     params: { mode, limit, offset },
-    query: ['id', 'uid', 'title', 'commentCount', 'resolved', 'mode', 'voteSummary', 'createdAt']
+    query: {
+      total: true,
+      limit: true,
+      offset: true,
+      collection: ['id', 'uid', 'title', 'commentCount', 'resolved', 'mode', 'voteSummary', 'createdAt']
+    }
   })
-  if (!questions) return <div>loading...</div>
+  if (!result) return <div>loading...</div>
+  const { total, collection: questions } = result
   return <div>
     一覧ページになります
     <Grid container spacing={2}>

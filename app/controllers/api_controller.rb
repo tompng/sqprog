@@ -1,4 +1,17 @@
 class ApiController < ApplicationController
+  class QuestionCollection
+    include ArSerializer::Serializable
+    attr_reader :collection, :total, :limit, :offset
+    def initialize(collection:, total:, limit:, offset:)
+      @collection = collection
+      @total = total
+      @limit = limit
+      @offset = offset
+    end
+    serializer_field :total, :limit, :offset, type: :int
+    serializer_field :collection, type: [Question]
+  end
+
   class RootObject
     include ArSerializer::Serializable
     serializer_field :question, params_type: { id: :int }, type: Question do |_uid, id:|
@@ -12,7 +25,7 @@ class ApiController < ApplicationController
     end
     serializer_field(
       :questions,
-      type: [Question],
+      type: QuestionCollection,
       params_type: { mode: %w[all mine resolved unresolved], limit: :int, offset: :int }
     ) do |uid, mode: 'all', limit: 10, offset: 0|
       questions = case mode
@@ -25,14 +38,20 @@ class ApiController < ApplicationController
       else
         Question.all
       end
-      questions.limit(limit.to_i).offset(offset.to_i)
+      QuestionCollection.new(
+        limit: limit.to_i,
+        offset: offset.to_i,
+        total: questions.count,
+        collection: questions.limit(limit.to_i).offset(offset.to_i)
+      )
     end
   end
 
   def show
-    base_query = raw_params[:query]
-    field_name = base_query[:field]
-    query = { field_name => { params: base_query[:params].as_json, query: base_query[:query].as_json } }
-    render json: ArSerializer.serialize(RootObject.new, query, context: current_user_uid).values.first
+    render json: ArSerializer.serialize(
+      RootObject.new,
+      { data: raw_params[:query].as_json },
+      context: current_user_uid
+    ).values.first
   end
 end
