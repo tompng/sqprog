@@ -12,7 +12,7 @@ import {
 export type VoteType = 'up' | 'down' | 'forward' | 'rotate'
 export type VoteSummary = { [key in VoteType]?: number | null }
 
-const useVoteStyles = makeStyles({
+export const useVoteStyles = makeStyles({
   icon: {
     width: '24px',
     height: '24px',
@@ -89,6 +89,7 @@ const VoteButton: React.FC<{ value: VoteValue; selected: boolean; onChange: (val
     <div className={`${classes.icon} ${classes[value]}`} />
   </IconButton>
 }
+
 const Splat = styled.div`
   width: 24px;
   height: 24px;

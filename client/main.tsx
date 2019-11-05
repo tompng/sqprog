@@ -4,6 +4,7 @@ import { createBrowserHistory } from 'history'
 import { Router, Route, Switch } from 'react-router-dom'
 import { NewQuestionForm } from './question/NewQuestionForm'
 import { QuestionView } from './question/QuestionView'
+import { QuestionsView } from './question/QuestionsView'
 import { applyRippleStyle } from './lib/ikachan'
 import { CurrentUserContext } from './context'
 const history = createBrowserHistory()
@@ -24,6 +25,7 @@ const Routes: React.FC<{ uid: string }> = ({ uid }) => {
     <CurrentUserContext.Provider value={uid}>
       <Router history={history}>
         <Switch>
+          <Route path="/questions/" exact component={QuestionsView} />
           <Route path="/questions/new" exact component={NewQuestionView} />
           <Route path="/questions/:id(\d+)" exact component={QuestionView} />
           <Route component={NotFoundView} />

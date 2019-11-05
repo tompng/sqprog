@@ -26,10 +26,11 @@ type UseFetchedStateResult<T> = [T, (arg: T | ((t: T) => T)) => void, () => Prom
 export function useFetchedState<Q extends TypeApiControllerRootObjectAliasFieldQuery>(query: Q):
   UseFetchedStateResult<DataTypeFromRootQuery<Q> | null> {
   const [state, setState] = useState<null | object>(null)
+  const paramsKey = 'params' in query ? JSON.stringify((query as any).params) : undefined
   const reload = useCallback(async () => {
     const data = await fetchData(query)
     setState(data)
-  }, [])
+  }, [paramsKey])
   useEffect(() => {
     let aborted = false
     ;(async () => {
@@ -37,7 +38,7 @@ export function useFetchedState<Q extends TypeApiControllerRootObjectAliasFieldQ
       if (!aborted) setState(data)
     })()
     return () => { aborted = true }
-  }, [])
+  }, [paramsKey])
   return [state, setState, reload] as any
 }
 
