@@ -15,7 +15,7 @@ class QuestionsController < ApplicationController
   def create
     raise unless Question.can_create?
     raise if Question.where(uid: current_user_uid).where('created_at > ?', 1.minutes.ago).exists?
-    question = Question.new description: create_params[:description], uid: current_user_uid
+    question = Question.new description: create_params[:description], uid: current_user_uid, mode: create_params[:mode]
     title_base = [question.description]
     create_params[:codes].each do |code_params|
       code = code_params[:code].to_s
@@ -51,7 +51,7 @@ class QuestionsController < ApplicationController
   private
 
   def create_params
-    params.permit :description, codes: [:file_name, :code]
+    params.permit :description, :mode, codes: [:file_name, :code]
   end
 
   def set_question
