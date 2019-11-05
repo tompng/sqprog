@@ -22,7 +22,7 @@ const NonDecoratedA = styled.a`
 const useStyles = makeStyles(() => ({
   paper: {
     position: 'relative',
-    height: 140
+    height: 120
   }
 }))
 
@@ -31,6 +31,7 @@ type Props = {
   uid: string
   title: string
   commentCount: number
+  resolved: boolean
   voteSummary: { [key in 'up' | 'down' | 'forward' | 'rotate']?: number | null }
 }
 
@@ -40,13 +41,19 @@ const QuestionCard: React.FC<Props> = (q) => {
     <Card>
       <CardActionArea className={classes.paper}>
         <IconWrapper>
-          <UserIcon uid={q.uid} size={32} />
+          <UserIcon uid={q.uid} size={36} />
         </IconWrapper>
         <TitleWrapper>
           {q.title}
         </TitleWrapper>
         <VoteSummary>
-          <CommentIcon /><VoteCount>{q.commentCount}</VoteCount>
+          <MitayoWrapper>
+            { q.resolved && <MitayoIcon><UserIcon uid="ikachan" size={20} /></MitayoIcon>}
+            { !q.resolved && <MitenaiyoIcon><UserIcon uid="ikachan" size={20} /></MitenaiyoIcon>}
+            <MitayoText>{ q.resolved ? 'みたよ' : 'まだだよ' }</MitayoText>
+          </MitayoWrapper>
+          <CommentIcon />
+          <VoteCount>{q.commentCount}</VoteCount>
           <VoteItem type="up" count={q.voteSummary.up || 0} />
           <VoteItem type="down" count={q.voteSummary.down || 0} />
           {
@@ -70,12 +77,32 @@ const IconWrapper = styled.div`
   top: 4px;
 `
 
+const MitayoIcon = styled.div`
+  display: inline-block;
+`
+
+const MitenaiyoIcon = styled.div`
+  display: inline-block;
+  opacity: 0.4;
+`
+
+const MitayoText = styled.div`
+  font-size: 10px;
+  color: gray;
+`
+
+const MitayoWrapper = styled.div`
+  display: inline-block;
+  text-align: center;
+  margin-right: 8px;
+`
+
 const TitleWrapper = styled.div`
   position: relative;
-  padding-left: 40px;
+  padding-left: 44px;
   padding-top: 4px;
   padding-right: 4px;
-  height: 72px;
+  height: 48px;
   margin-bottom: 16px;
   overflow: hidden;
   &:after {
