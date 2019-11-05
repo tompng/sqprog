@@ -42,7 +42,7 @@ class ApiController < ApplicationController
         limit: limit.to_i,
         offset: offset.to_i,
         total: questions.count,
-        collection: questions.limit(limit.to_i).offset(offset.to_i)
+        collection: questions.order(id: :desc).limit(limit.to_i).offset(offset.to_i)
       )
     end
   end
