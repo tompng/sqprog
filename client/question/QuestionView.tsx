@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useCallback, useContext } from 'react'
+import React, { useMemo, useEffect, useState, useCallback, useContext } from 'react'
 import styled from 'styled-components'
 import { RouteComponentProps } from 'react-router-dom'
 import { Code } from '../code/Code'
@@ -6,7 +6,7 @@ import { useFetchedState } from '../api'
 import { NewCommentForm } from '../comment/CommentForm'
 import Comment from '../comment/Comment'
 import CommentHighlight from '../comment/CommentHighlight'
-import { QuestionContext, CurrentUserContext } from '../context'
+import { QuestionContext, CurrentUserContext, UnreadCountContext } from '../context'
 import UserIcon from '../components/UserIcon'
 import Vote from '../components/Vote'
 import useRouter from 'use-react-router'
@@ -19,6 +19,8 @@ import { Header, PageBody } from '../components/Header'
 
 export const QuestionView: React.FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
   const questionId = Number(match.params.id)
+  const unread = useContext(UnreadCountContext)
+  const currentUser = useContext(CurrentUserContext)
   const [question, complete, reload] = useFetchedState({
     field: 'question',
     params: { id: questionId },
@@ -38,6 +40,14 @@ export const QuestionView: React.FC<RouteComponentProps<{ id: string }>> = ({ ma
   })
   const qid = question && question.id
   const uid = question && question.uid
+  useEffect(() => {
+    if (!question) return
+    if (!question.unreads.find(u => u.uid === currentUser)) return
+    (async () => {
+      await questionApi.read(question.id)
+      unread.reload()
+    })()
+  }, [qid])
   const questionContextValue = useMemo(() => ({ id: qid || 0, uid: uid || '', reload }), [qid, uid, reload])
   const [anchorEl, setAnchorEl] = useState<Element | null>(null)
   const handleMenuOpen = (event: React.MouseEvent) => {
@@ -61,7 +71,6 @@ export const QuestionView: React.FC<RouteComponentProps<{ id: string }>> = ({ ma
     await questionApi.destroy(question.id)
     history.push('/questions/')
   }, [question])
-  const currentUser = useContext(CurrentUserContext)
   if (!question) {
     const message = complete ? '404 not found' : 'loading...'
     return <div>
