@@ -28,13 +28,18 @@ const Icon = styled.div`
   border-radius: 50%;
 `
 const UserIcon: React.FC<{ uid: string, size: number }> = ({ uid, size }) => {
+  const svg = useIconSVG(uid)
+  return <>
+    <Icon style={{ width: size, height: size, backgroundImage: `url('data:image/svg+xml,${svg}')` }} />
+  </>
+}
+
+export function useIconSVG(uid: string) {
   const svg = useMemo(() => IconFactory.get(uid), [uid])
   useEffect(() => {
     return () => IconFactory.release(uid)
   }, [uid])
-  return <>
-    <Icon style={{ width: size, height: size, backgroundImage: `url('data:image/svg+xml,${svg}')` }} />
-  </>
+  return svg
 }
 
 export default React.memo(UserIcon)
