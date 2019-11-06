@@ -6,6 +6,10 @@ class QuestionsController < ApplicationController
     head :ok
   end
 
+  def read_all
+    Unread.where(uid: current_user_uid).destroy_all
+  end
+
   def resolve
     raise unless ikachan?
     @question.update! resolved: params[:resolved]

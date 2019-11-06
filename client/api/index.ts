@@ -84,6 +84,9 @@ export const question = {
   },
   async vote(questionId: number, value: TypeVote['value'] | null) {
     await post(`/questions/${questionId}/vote`, { value: value })
+  },
+  async readAll() {
+    await post(`/questions/read_all`)
   }
 }
 export const comment = {

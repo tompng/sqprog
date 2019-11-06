@@ -10,6 +10,9 @@ Rails.application.routes.draw do
       post :read
       post :vote
     end
+    collection do
+      post :read_all
+    end
   end
 
   resources :comments, only: [:create, :update, :destroy] do
