@@ -2,10 +2,16 @@ import React, { useMemo, useState, useCallback, useContext, useRef, useEffect } 
 import styled from 'styled-components'
 import {
   AppBar, Toolbar, IconButton, Typography, Button, Badge,
+  Drawer, Divider, List, ListItem, ListItemIcon, ListItemText,
   makeStyles
 } from '@material-ui/core'
 import MenuIcon from '@material-ui/icons/Menu'
-import AlarmIcon from '@material-ui/icons/Notifications'
+import AlertIcon from '@material-ui/icons/Notifications'
+import SendIcon from '@material-ui/icons/Send'
+import SubjectIcon from '@material-ui/icons/Subject'
+import WidgetsIcon from '@material-ui/icons/Widgets'
+import StorageIcon from '@material-ui/icons/Storage'
+import useRouter from 'use-react-router'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -24,10 +30,12 @@ type HeaderProps = {
 }
 export const Header: React.FC<HeaderProps> = ({ title }: HeaderProps) => {
   const classes = useStyles()
+  const { history } = useRouter()
+  const [drawerOpen, setDrawerOpen] = useState(false)
   return <div className={classes.root}>
     <AppBar position="fixed">
       <Toolbar>
-        <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
+        <IconButton edge="start" className={classes.menuButton} color="inherit" onClick={() => setDrawerOpen(true)}>
           <MenuIcon />
         </IconButton>
         <Typography variant="h6" className={classes.title}>
@@ -35,12 +43,28 @@ export const Header: React.FC<HeaderProps> = ({ title }: HeaderProps) => {
         </Typography>
         <IconButton color="inherit">
           <Badge badgeContent={4} color="secondary">
-            <AlarmIcon />
+            <AlertIcon />
          </Badge>
         </IconButton>
       </Toolbar>
     </AppBar>
     <Toolbar />
+    <Drawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
+      <List>
+        <ListItem button onClick={() => history.push('/questions/new')}>
+          <ListItemIcon><SendIcon /></ListItemIcon>
+          <ListItemText primary="コードを送る" />
+        </ListItem>
+        <ListItem button onClick={() => history.push('/questions/')}>
+          <ListItemIcon><WidgetsIcon /></ListItemIcon>
+          <ListItemText primary="みんなのコード" />
+        </ListItem>
+        <ListItem button onClick={() => history.push('/questions/mine')}>
+          <ListItemIcon><SubjectIcon /></ListItemIcon>
+          <ListItemText primary="あなたが送ったコード" />
+        </ListItem>
+     </List>
+    </Drawer>
   </div>
 }
 
