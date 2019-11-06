@@ -13,7 +13,7 @@ import SubjectIcon from '@material-ui/icons/Subject'
 import WidgetsIcon from '@material-ui/icons/Widgets'
 import BackIcon from '@material-ui/icons/NavigateBefore'
 import UserIcon, { useIconSVG } from './UserIcon'
-import { CurrentUserContext } from '../context'
+import { CurrentUserContext, UnreadCountContext } from '../context'
 
 import { LastQuestionListUrlContext } from '../context'
 import useRouter from 'use-react-router'
@@ -45,6 +45,7 @@ export const Header: React.FC<HeaderProps> = ({ title, back, current }) => {
   const [userIconDialogOpen, setUserIconDialogOpen] = useState(false)
   const closeUserIconDialog = useCallback(() => setUserIconDialogOpen(false), [setUserIconDialogOpen])
   const openUserIconDialog = useCallback(() => setUserIconDialogOpen(true), [setUserIconDialogOpen])
+  const { count: unreadCount } = useContext(UnreadCountContext)
   return <div className={classes.root}>
     <AppBar position="fixed">
       <Toolbar>
@@ -62,7 +63,7 @@ export const Header: React.FC<HeaderProps> = ({ title, back, current }) => {
           {title || ''}
         </Typography>
         <IconButton color="inherit" onClick={() => { history.push('/unreads') }}>
-          <Badge badgeContent={4} color="secondary">
+          <Badge badgeContent={unreadCount || undefined} color="secondary">
             <AlertIcon />
          </Badge>
         </IconButton>
