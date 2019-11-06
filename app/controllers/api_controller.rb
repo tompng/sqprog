@@ -15,10 +15,10 @@ class ApiController < ApplicationController
   class RootObject
     include ArSerializer::Serializable
     serializer_field :question, params_type: { id: :int }, type: Question do |_uid, id:|
-      Question.find id
+      Question.find_by id: id
     end
     serializer_field :comment, params_type: { id: :int }, type: Comment do |_uid, id:|
-      Comment.find id
+      Comment.find_by id: id
     end
     serializer_field :unreads, type: Unread do |uid|
       Unread.where uid: uid

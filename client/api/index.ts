@@ -22,24 +22,26 @@ export async function fetchData<Q extends TypeApiControllerRootObjectAliasFieldQ
   return await response.json()
 }
 
-type UseFetchedStateResult<T> = [T, (arg: T | ((t: T) => T)) => void, () => Promise<undefined>]
+type UseFetchedStateResult<T> = [T, boolean, () => Promise<undefined>]
 export function useFetchedState<Q extends TypeApiControllerRootObjectAliasFieldQuery>(query: Q):
   UseFetchedStateResult<DataTypeFromRootQuery<Q> | null> {
-  const [state, setState] = useState<null | object>(null)
+  const [state, setState] = useState<[null | object, boolean]>([null, false])
   const paramsKey = 'params' in query ? JSON.stringify((query as any).params) : undefined
   const reload = useCallback(async () => {
+    setState([state[0], false])
     const data = await fetchData(query)
-    setState(data)
-  }, [paramsKey])
+    setState([data, true])
+  }, [state, paramsKey])
   useEffect(() => {
     let aborted = false
+    setState([state[0], false])
     ;(async () => {
       const data = await fetchData(query)
-      if (!aborted) setState(data)
+      if (!aborted) setState([data, true])
     })()
     return () => { aborted = true }
   }, [paramsKey])
-  return [state, setState, reload] as any
+  return [...state, reload] as any
 }
 
 

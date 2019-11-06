@@ -19,7 +19,7 @@ import { Header, PageBody } from '../components/Header'
 
 export const QuestionView: React.FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
   const questionId = Number(match.params.id)
-  const [question, , reload] = useFetchedState({
+  const [question, complete, reload] = useFetchedState({
     field: 'question',
     params: { id: questionId },
     query: {
@@ -62,10 +62,13 @@ export const QuestionView: React.FC<RouteComponentProps<{ id: string }>> = ({ ma
     history.push('/questions/')
   }, [question])
   const currentUser = useContext(CurrentUserContext)
-  if (!question) return <div>
-    <Header back title="loading..." />
-    <PageBody>loading...</PageBody>
-  </div>
+  if (!question) {
+    const message = complete ? '404 not found' : 'loading...'
+    return <div>
+      <Header back title={message} />
+      <PageBody>{message}</PageBody>
+    </div>
+  }
   return <QuestionContext.Provider value={questionContextValue}>
     <Header back title={`${question.title.substr(0, 12) + '...'}`} />
     <PageBody>
