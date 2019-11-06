@@ -3,7 +3,7 @@ import { question } from '../api'
 import { CodeForm } from '../code/CodeForm'
 import styled from 'styled-components'
 import { compact } from 'lodash'
-import { FormControl, TextField, Button, MenuItem, Select } from '@material-ui/core'
+import { FormControl, TextField, Button, MenuItem, Select, Typography } from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add'
 import useRouter from 'use-react-router'
 import { RightUpSVG, svgImgUrl } from '../lib/ikachan'
@@ -58,14 +58,16 @@ export const NewQuestionForm: React.FC = () => {
   const togglePreview = useCallback(() => setPreview(p => !p), [setPreview])
   return <>
     <NewQuestionHeader>
-      <div>いかちゃんにコードを送りつけよう</div>
       <Select value={mode} onChange={onModeChange}>
         <MenuItem value="normal">通常モードで見てもらう</MenuItem>
         <MenuItem value="terrible">理不尽モードで見てもらう</MenuItem>
       </Select>
     </NewQuestionHeader>
     <DescriptionWrapper>
-      説明文 <Button size="small" color="primary" onClick={togglePreview}>{preview ? '編集に戻る' : 'プレビュー'}</Button>
+      <Typography>
+        説明文
+        <Button size="small" color="primary" onClick={togglePreview}>{preview ? '編集に戻る' : 'プレビュー'}</Button>
+      </Typography>
       { !preview &&
         <FormControl fullWidth>
           <TextField

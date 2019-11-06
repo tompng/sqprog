@@ -13,7 +13,7 @@ const history = createBrowserHistory()
 
 const NewQuestionView: React.FC = () => {
   return <>
-    <Header current="new_question" />
+    <Header current="new_question" title="いかちゃんにコードを送ろう" />
     <PageBody>
       <NewQuestionForm />
     </PageBody>
