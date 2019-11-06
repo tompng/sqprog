@@ -13,7 +13,7 @@ const history = createBrowserHistory()
 
 const NewQuestionView: React.FC = () => {
   return <>
-    <Header back />
+    <Header current="new_question" />
     <PageBody>
       <NewQuestionForm />
     </PageBody>

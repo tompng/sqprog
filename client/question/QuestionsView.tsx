@@ -6,27 +6,44 @@ import { Grid, Button } from '@material-ui/core'
 import QuestionCard from './QuestionCard'
 import { Header, PageBody } from '../components/Header'
 import { LastQuestionListUrlContext } from '../context'
+import queryString from 'query-string'
+import { RouteProps } from 'react-router'
 import useRouter from 'use-react-router'
 
-export const QuestionsView: React.FC = () => {
-  const { location, history, ...a } = useRouter()
+type Mode = 'all' | 'mine' | 'resolved' | 'unresolved'
+const modes: Mode[] = ['all', 'mine', 'resolved', 'unresolved']
+
+export const QuestionsView: React.FC<{ location: Exclude<RouteProps['location'], undefined> }> = ({ location }) => {
+  if (!location) throw 'should not happen'
   const [, setURL] = useContext(LastQuestionListUrlContext)
   useEffect(() => {
     setURL(location.pathname + location.search)
   }, [location.pathname, location.search])
-  return <QuestionsList mode="all" />
+  const query = queryString.parse(location.search)
+  const queryMode = String(query['mode'])
+  const mode: Mode = modes.find(m => m === queryMode) || 'all'
+  const queryPage = Number(query['page'] || '1')
+  return <QuestionsList mode={mode} page={queryPage}/>
 }
 
-type Mode = 'all' | 'mine' | 'resolved' | 'unresolved'
 const titles: Record<Mode, string> = {
   all: 'みんなのコード',
   mine: '自分のコード',
   resolved: 'いかちゃんが見たコード',
   unresolved: 'いかちゃんが見てないコード'
 }
-export const QuestionsList: React.FC<{ mode: Mode }> = ({ mode }) => {
+function questionsUrl(mode: Mode, page: number) {
+  const q: string[] = []
+  if (mode !== 'all') q.push('mode=' + mode)
+  if (page !== 1) q.push('page=' + page)
+  const base = '/questions/'
+  if (q.length === 0) return base
+  return `${base}?${q.join('&')}`
+}
+export const QuestionsList: React.FC<{ mode: Mode; page: number }> = ({ mode, page }) => {
   const limit = 48
-  const [offset, setOffset] = useState(0)
+  const offset = (page - 1) * limit
+  const { history } = useRouter()
   const [result] = useFetchedState({
     field: 'questions',
     params: { mode, limit, offset },
@@ -44,7 +61,7 @@ export const QuestionsList: React.FC<{ mode: Mode }> = ({ mode }) => {
   const loading = result.offset !== offset
   const { total, collection: questions } = result
   return <div>
-    <Header title={titles[mode]} />
+    <Header title={titles[mode]} current={mode === 'all' ? 'all_questions' : mode === 'mine' ? 'my_questions' : undefined} />
     <PageBody>
       <Grid container spacing={2} style={{ opacity: loading ? 0.2 : 1 }}>
         {questions.map(q => {
@@ -54,8 +71,8 @@ export const QuestionsList: React.FC<{ mode: Mode }> = ({ mode }) => {
         })}
       </Grid>
       <Pagination
-        onChange={page => { setOffset((page - 1) * limit) }}
-        currentPage={Math.ceil((offset + 1)/ limit)}
+        onChange={page => { history.push(questionsUrl(mode, page))}}
+        currentPage={page}
         totalPages={Math.ceil(total / limit)} />
     </PageBody>
   </div>
