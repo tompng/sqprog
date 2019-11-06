@@ -1,10 +1,9 @@
-import React, { useMemo, useState, useCallback, useContext } from 'react'
+import React, { useMemo, useState, useCallback } from 'react'
 import highlightLines from '../lib/highlight'
 import styled from 'styled-components'
 import { StyledCode } from './StyledCode'
 import {
-  FormControl, Input, InputLabel, TextField,
-  Paper, IconButton, Button, Typography,
+  Paper, Button, Typography,
   makeStyles
 } from '@material-ui/core'
 import CommentIcon from '@material-ui/icons/Comment'

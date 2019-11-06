@@ -1,7 +1,7 @@
-import React, { useMemo, useState, useCallback, useContext, useRef, useEffect } from 'react'
+import React, { useState, useCallback, useContext } from 'react'
 import styled from 'styled-components'
 import {
-  AppBar, Toolbar, IconButton, Typography, Button, Badge,
+  AppBar, Toolbar, IconButton, Typography, Badge,
   Drawer, Divider, List, ListItem, ListItemIcon, ListItemText,
   Dialog,
   makeStyles
@@ -92,7 +92,7 @@ export const Header: React.FC<HeaderProps> = ({ title, back, current }) => {
           <ListItemText primary="自分のコード" />
         </ListLinkItem>
         <ListLinkItem selected={current === 'unreads'} url="/unreads" afterClick={closeDrawer}>
-          <ListItemIcon><SubjectIcon /></ListItemIcon>
+          <ListItemIcon><AlertIcon /></ListItemIcon>
           <ListItemText primary="未読" />
         </ListLinkItem>
      </List>

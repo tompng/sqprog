@@ -1,7 +1,7 @@
 import React, { useMemo, useCallback } from 'react'
 import {
   FormControl, Input, InputLabel, TextField,
-  Paper, IconButton, Button,
+  Paper, IconButton,
   makeStyles
 } from '@material-ui/core'
 import CloseIcon from '@material-ui/icons/Close'

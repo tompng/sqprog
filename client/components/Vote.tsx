@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useCallback, useContext, useRef, useEffect } from 'react'
+import React, { useState, useCallback, useContext } from 'react'
 import styled from 'styled-components'
 import AddIcon from '@material-ui/icons/Add'
 import { comment as commentApi, question as questionApi } from '../api'

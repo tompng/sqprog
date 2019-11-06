@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect, useRef } from 'react'
+import React, { useMemo, useEffect } from 'react'
 import styled from 'styled-components'
 import { genIconSVG, genIkachanSVG } from '../lib/ikachan'
 

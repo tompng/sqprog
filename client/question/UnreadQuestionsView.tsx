@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useContext } from 'react'
+import React, { useCallback, useEffect, useContext } from 'react'
 import { useFetchedState, question } from '../api'
 import styled from 'styled-components'
 import { Grid, Button, Typography } from '@material-ui/core'
@@ -6,7 +6,6 @@ import QuestionCard from './QuestionCard'
 import { Header, PageBody } from '../components/Header'
 import { LastQuestionListUrlContext, UnreadCountContext } from '../context'
 import { RouteProps } from 'react-router'
-import useRouter from 'use-react-router'
 
 export const UnreadQuestionsView: React.FC<{ location: Exclude<RouteProps['location'], undefined> }> = ({ location }) => {
   const [, setURL] = useContext(LastQuestionListUrlContext)

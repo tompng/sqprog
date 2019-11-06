@@ -1,10 +1,9 @@
-import React, { useMemo, useState, useCallback, useContext, useRef, useEffect } from 'react'
+import React, { useState, useCallback, useContext, useRef, useEffect } from 'react'
 import CommentHighlight from './CommentHighlight'
 import styled from 'styled-components'
 import UserIcon from '../components/UserIcon'
 import { CurrentUserContext } from '../context'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
-import AddIcon from '@material-ui/icons/Add'
 import EditIcon from '@material-ui/icons/Edit'
 import DeleteIcon from '@material-ui/icons/Delete'
 import { comment as commentApi } from '../api'
@@ -12,8 +11,7 @@ import Vote, { VoteType, VoteSummary } from '../components/Vote'
 import { QuestionContext } from '../context'
 import { UpdateCommentForm } from './CommentForm'
 import {
-  Paper, IconButton, Button, Menu, MenuItem, Typography,
-  makeStyles
+  IconButton, Menu, MenuItem, Typography,
 } from '@material-ui/core'
 
 type CommentProps = { commentId: number; uid: string; content: string, myVote?: VoteType | null, voteSummary?: VoteSummary }

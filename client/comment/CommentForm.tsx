@@ -1,10 +1,8 @@
-import React, { useMemo, useState, useCallback, useContext, useRef, useEffect } from 'react'
+import React, { useState, useCallback, useContext, useRef, useEffect } from 'react'
 import CommentHighlight from './CommentHighlight'
 import styled from 'styled-components'
 import {
-  FormControl, Input, InputLabel, TextField,
-  Paper, IconButton, Button,
-  makeStyles
+  FormControl, TextField, Button
 } from '@material-ui/core'
 import { comment as commentApi } from '../api'
 import { QuestionContext, CodeIdContext, LineNumberContext } from '../context'

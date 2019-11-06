@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useEffect, useContext } from 'react'
 import { useFetchedState } from '../api'
-import { makeStyles } from '@material-ui/core/styles'
 import styled from 'styled-components'
 import { Grid, Button } from '@material-ui/core'
 import QuestionCard from './QuestionCard'
@@ -14,7 +13,6 @@ type Mode = 'all' | 'mine' | 'resolved' | 'unresolved'
 const modes: Mode[] = ['all', 'mine', 'resolved', 'unresolved']
 
 export const QuestionsView: React.FC<{ location: Exclude<RouteProps['location'], undefined> }> = ({ location }) => {
-  if (!location) throw 'should not happen'
   const [, setURL] = useContext(LastQuestionListUrlContext)
   useEffect(() => {
     setURL(location.pathname + location.search)
