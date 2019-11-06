@@ -130,7 +130,7 @@ const VoteItem: React.FC<{ type: 'up' | 'down' | 'forward' | 'rotate'; count: nu
   </>
 }
 const VoteCount = styled.span`
-  font-size: 16px;
+  font-size: 12px;
   color: gray;
   margin-left: 4px;
   margin-right: 8px;

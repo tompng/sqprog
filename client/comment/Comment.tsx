@@ -12,7 +12,7 @@ import Vote, { VoteType, VoteSummary } from '../components/Vote'
 import { QuestionContext } from '../context'
 import { UpdateCommentForm } from './CommentForm'
 import {
-  Paper, IconButton, Button, Menu, MenuItem,
+  Paper, IconButton, Button, Menu, MenuItem, Typography,
   makeStyles
 } from '@material-ui/core'
 
@@ -50,9 +50,9 @@ const Comment: React.FC<CommentProps> = ({ commentId, uid, content, myVote, vote
   return <CommentWrapper>
     <CommentUserInfo>
       <UserIcon uid={uid} size={56} />
-      <div>
+      <Typography variant="caption">
         {uid === 'ikachan' ? 'いかちゃん' : uid === question.uid ? '投稿いか' : null}
-      </div>
+      </Typography>
     </CommentUserInfo>
     <CommentBody>
       { editing
@@ -93,7 +93,8 @@ const CommentUserInfo = styled.div`
   position: absolute;
   left: 4px;
   top: 4px;
-  width: 60px;
+  width: 72px;
+  text-align: left;
   text-align: center;
   font-size: 10px;
 `

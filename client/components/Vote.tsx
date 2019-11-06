@@ -5,7 +5,7 @@ import { comment as commentApi, question as questionApi } from '../api'
 import { VoteUpSVG, VoteDownSVG, VoteForwardSVG, VoteRotateSVG, VoteSplatSVG, svgImgUrl } from '../lib/ikachan'
 import { QuestionContext } from '../context'
 import {
-  IconButton,
+  IconButton, Typography,
   makeStyles
 } from '@material-ui/core'
 
@@ -57,16 +57,16 @@ const Vote: React.FC<{ commentId?: number; questionId?: number; myVote?: VoteTyp
   }
   return <>
     <VoteButton value='up' selected={currentVote === 'up'} onChange={onChange} />
-    <VoteCount>{countOf('up')}</VoteCount>
+    <VoteCount><Typography>{countOf('up')}</Typography></VoteCount>
     <VoteButton value='down' selected={currentVote === 'down'} onChange={onChange} />
-    <VoteCount>{countOf('down')}</VoteCount>
+    <VoteCount><Typography>{countOf('down')}</Typography></VoteCount>
     {(showAll || voteSummary.forward) && <>
       <VoteButton value='forward' selected={currentVote === 'forward'} onChange={onChange} />
-      <VoteCount>{countOf('forward')}</VoteCount>
+      <VoteCount><Typography>{countOf('forward')}</Typography></VoteCount>
     </>}
     {(showAll || voteSummary.rotate) && <>
       <VoteButton value='rotate' selected={currentVote === 'rotate'} onChange={onChange} />
-      <VoteCount>{countOf('rotate')}</VoteCount>
+      <VoteCount><Typography>{countOf('rotate')}</Typography></VoteCount>
     </>}
     {
       (!showAll && (!voteSummary.forward || !voteSummary.rotate)) &&

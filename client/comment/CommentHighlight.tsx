@@ -6,7 +6,7 @@ import { mdparse } from '../lib/md'
 import { highlightCode } from '../lib/highlight'
 import {
   FormControl, Input, InputLabel, TextField,
-  Paper, IconButton, Button,
+  Paper, IconButton, Button, Typography,
   makeStyles
 } from '@material-ui/core'
 
@@ -42,7 +42,7 @@ const useStyles = makeStyles(theme => ({
 const CommentHighlight: React.FC<{ content: string }> = ({ content }) => {
   const classes = useStyles()
   const lines = mdparse(content)
-  return <>
+  return <Typography component="div">
   {
     lines.map((line, lineIndex) => (<div key={lineIndex} className={classes.line}>{
       line.map((e, key) => {
@@ -75,7 +75,7 @@ const CommentHighlight: React.FC<{ content: string }> = ({ content }) => {
       })
     }</div>))
   }
-  </>
+  </Typography>
 }
 
 export default React.memo(CommentHighlight)

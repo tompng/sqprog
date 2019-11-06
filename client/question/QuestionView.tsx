@@ -12,7 +12,7 @@ import Vote from '../components/Vote'
 import useRouter from 'use-react-router'
 import { question as questionApi } from '../api'
 import {
-  IconButton, Menu, MenuItem
+  IconButton, Menu, MenuItem, Typography
 } from '@material-ui/core'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
 import { Header, PageBody } from '../components/Header'
@@ -75,7 +75,7 @@ export const QuestionView: React.FC<RouteComponentProps<{ id: string }>> = ({ ma
       <QuestionInfo>
         <QuestionUserInfo>
           <UserIcon uid={question.uid} size={64} />
-          <div>{question.uid === 'ikachan' ? 'いかちゃん' : '投稿いか'}</div>
+          <Typography variant="caption">{question.uid === 'ikachan' ? 'いかちゃん' : '投稿いか'}</Typography>
         </QuestionUserInfo>
         { currentUser === 'ikachan' &&
           <QuestionMenu>

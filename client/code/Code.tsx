@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { StyledCode } from './StyledCode'
 import {
   FormControl, Input, InputLabel, TextField,
-  Paper, IconButton, Button,
+  Paper, IconButton, Button, Typography,
   makeStyles
 } from '@material-ui/core'
 import CommentIcon from '@material-ui/icons/Comment'
@@ -95,7 +95,7 @@ export const Code: React.FC<CodeProps> = ({ codeId, fileName, code, threads }) =
   }, [threads])
   return <CodeIdContext.Provider value={codeId}>
     <Paper className={classes.paper}>
-      <FileName>file:&nbsp;{fileName}</FileName>
+      <FileName><Typography>file:&nbsp;{fileName}</Typography></FileName>
       <ScrollableWrapper>
         <table className={classes.table}>
           <tbody>
