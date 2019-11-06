@@ -9,6 +9,7 @@ import { applyRippleStyle } from './lib/ikachan'
 import { CurrentUserContext, UnreadCountContext, LastQuestionListUrlContext } from './context'
 import { Header, PageBody } from './components/Header'
 import { UnreadQuestionsView } from './question/UnreadQuestionsView'
+import { TopPage } from './TopPage'
 import { useFetchedState } from './api'
 
 const history = createBrowserHistory()
@@ -47,6 +48,7 @@ const Routes: React.FC<{ uid: string }> = ({ uid }) => {
               <Route path="/questions/new" exact component={NewQuestionView} />
               <Route path="/questions/:id(\d+)" exact component={QuestionView} />
               <Route path="/unreads" exact component={UnreadQuestionsView} />
+              <Route path="/" exact component={TopPage} />
               <Route component={NotFoundView} />
             </Switch>
           </Router>

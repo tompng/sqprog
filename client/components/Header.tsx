@@ -12,6 +12,7 @@ import SendIcon from '@material-ui/icons/Send'
 import SubjectIcon from '@material-ui/icons/Subject'
 import WidgetsIcon from '@material-ui/icons/Widgets'
 import BackIcon from '@material-ui/icons/NavigateBefore'
+import TopIcon from '@material-ui/icons/Flag'
 import UserIcon, { useIconSVG } from './UserIcon'
 import { CurrentUserContext, UnreadCountContext } from '../context'
 
@@ -33,7 +34,7 @@ const useStyles = makeStyles(theme => ({
 type HeaderProps = {
   title?: string
   back?: boolean
-  current?: 'new_question' | 'all_questions' | 'my_questions' | 'unreads'
+  current?: 'new_question' | 'all_questions' | 'my_questions' | 'unreads' | 'toppage'
 }
 export const Header: React.FC<HeaderProps> = ({ title, back, current }) => {
   const classes = useStyles()
@@ -79,6 +80,10 @@ export const Header: React.FC<HeaderProps> = ({ title, back, current }) => {
       </ListItem>
       <Divider />
       <List>
+        <ListLinkItem selected={current === 'toppage'} url="/" afterClick={closeDrawer}>
+          <ListItemIcon><TopIcon /></ListItemIcon>
+          <ListItemText primary="これはなに？" />
+        </ListLinkItem>
         <ListLinkItem selected={current === 'new_question'} url="/questions/new" afterClick={closeDrawer}>
           <ListItemIcon><SendIcon /></ListItemIcon>
           <ListItemText primary="コードを送る" />

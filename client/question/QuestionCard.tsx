@@ -5,23 +5,7 @@ import UserIcon from '../components/UserIcon'
 import { useVoteStyles } from '../components/Vote'
 import { Card, CardActionArea } from '@material-ui/core'
 import CommentIcon from '@material-ui/icons/Comment'
-import useRouter from 'use-react-router'
-
-
-const Link: React.FC<{ to: string }> = ({ to, children }) => {
-  const { history } = useRouter()
-  const onClick = useCallback(e => {
-    e.preventDefault()
-    history.push(to)
-  }, [to])
-  return <NonDecoratedA href={to} onClick={onClick}>
-    {children}
-  </NonDecoratedA>
-}
-const NonDecoratedA = styled.a`
-  text-decoration: inherit;
-  color: inherit;
-`
+import { Link } from '../components/Link'
 
 const useStyles = makeStyles(() => ({
   paper: {
