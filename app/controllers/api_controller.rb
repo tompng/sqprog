@@ -20,8 +20,11 @@ class ApiController < ApplicationController
     serializer_field :comment, params_type: { id: :int }, type: Comment do |_uid, id:|
       Comment.find_by id: id
     end
-    serializer_field :unreads, type: Unread do |uid|
-      Unread.where uid: uid
+    serializer_field :unreadCount, type: :int do |uid|
+      Unread.where(uid: uid).count
+    end
+    serializer_field :unreads, type: [Unread] do |uid|
+      Unread.where(uid: uid).order(id: :desc).limit(48)
     end
     serializer_field(
       :questions,

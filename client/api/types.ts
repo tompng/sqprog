@@ -11,7 +11,8 @@ export interface TypeApiControllerQuestionCollection {
 export interface TypeApiControllerRootObject {
   question: TypeQuestion
   comment: TypeComment
-  unreads: TypeUnread
+  unreadCount: number
+  unreads: (TypeUnread [])
   questions: TypeApiControllerQuestionCollection
   _meta?: { name: 'ApiControllerRootObject'; query: TypeApiControllerRootObjectQueryBase }
 }
@@ -67,6 +68,7 @@ export interface TypeUnread {
   uid: string
   time: string
   questionId: number
+  question: TypeQuestion
   _meta?: { name: 'Unread'; query: TypeUnreadQueryBase }
 }
 
@@ -103,16 +105,18 @@ export type TypeApiControllerRootObjectQuery = TypeApiControllerRootObjectStanda
     { [key in keyof TypeApiControllerRootObjectQueryBase]?: key extends '*' ? true : TypeApiControllerRootObjectQueryBase[key] | TypeApiControllerRootObjectAliasFieldQuery }
     & { [key: string]: TypeApiControllerRootObjectAliasFieldQuery | NonAliasQuery }
   )
-export type TypeApiControllerRootObjectStandaloneFields = 'unreads'
+export type TypeApiControllerRootObjectStandaloneFields = 'unreadCount' | 'unreads'
 export type TypeApiControllerRootObjectAliasFieldQuery =
   | { field: 'question'; query?: TypeQuestionQuery; params: { id: number } }
   | { field: 'comment'; query?: TypeCommentQuery; params: { id: number } }
+  | { field: 'unreadCount' }
   | { field: 'unreads'; query?: TypeUnreadQuery }
   | { field: 'questions'; query?: TypeApiControllerQuestionCollectionQuery; params: { mode: ("all" | "mine" | "resolved" | "unresolved"); limit: number; offset: number } }
 
 export interface TypeApiControllerRootObjectQueryBase {
   question: { field: never; query?: TypeQuestionQuery; params: { id: number } }
   comment: { field: never; query?: TypeCommentQuery; params: { id: number } }
+  unreadCount: true
   unreads: true | TypeUnreadQuery | { field: never; query?: TypeUnreadQuery }
   questions: { field: never; query?: TypeApiControllerQuestionCollectionQuery; params: { mode: ("all" | "mine" | "resolved" | "unresolved"); limit: number; offset: number } }
 }
@@ -230,18 +234,20 @@ export type TypeUnreadQuery = TypeUnreadStandaloneFields | Readonly<TypeUnreadSt
     { [key in keyof TypeUnreadQueryBase]?: key extends '*' ? true : TypeUnreadQueryBase[key] | TypeUnreadAliasFieldQuery }
     & { [key: string]: TypeUnreadAliasFieldQuery | NonAliasQuery }
   )
-export type TypeUnreadStandaloneFields = 'id' | 'uid' | 'time' | 'questionId' | '*'
+export type TypeUnreadStandaloneFields = 'id' | 'uid' | 'time' | 'questionId' | 'question' | '*'
 export type TypeUnreadAliasFieldQuery =
   | { field: 'id' }
   | { field: 'uid' }
   | { field: 'time' }
   | { field: 'questionId' }
+  | { field: 'question'; query?: TypeQuestionQuery }
 
 export interface TypeUnreadQueryBase {
   id: true
   uid: true
   time: true
   questionId: true
+  question: true | TypeQuestionQuery | { field: never; query?: TypeQuestionQuery }
   '*': true
 }
 
