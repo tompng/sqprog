@@ -8,6 +8,7 @@ import { QuestionsView } from './question/QuestionsView'
 import { applyRippleStyle } from './lib/ikachan'
 import { CurrentUserContext, LastQuestionListUrlContext } from './context'
 import { Header, PageBody } from './components/Header'
+import { UnreadQuestionsView } from './question/UnreadQuestionsView'
 
 const history = createBrowserHistory()
 
@@ -37,6 +38,7 @@ const Routes: React.FC<{ uid: string }> = ({ uid }) => {
             <Route path="/questions/" exact component={QuestionsView} />
             <Route path="/questions/new" exact component={NewQuestionView} />
             <Route path="/questions/:id(\d+)" exact component={QuestionView} />
+            <Route path="/unreads" exact component={UnreadQuestionsView} />
             <Route component={NotFoundView} />
           </Switch>
         </Router>

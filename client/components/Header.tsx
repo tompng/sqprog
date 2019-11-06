@@ -33,7 +33,7 @@ const useStyles = makeStyles(theme => ({
 type HeaderProps = {
   title?: string
   back?: boolean
-  current?: 'new_question' | 'all_questions' | 'my_questions'
+  current?: 'new_question' | 'all_questions' | 'my_questions' | 'unreads'
 }
 export const Header: React.FC<HeaderProps> = ({ title, back, current }) => {
   const classes = useStyles()
@@ -61,7 +61,7 @@ export const Header: React.FC<HeaderProps> = ({ title, back, current }) => {
         <Typography variant="h6" className={classes.title}>
           {title || ''}
         </Typography>
-        <IconButton color="inherit">
+        <IconButton color="inherit" onClick={() => { history.push('/unreads') }}>
           <Badge badgeContent={4} color="secondary">
             <AlertIcon />
          </Badge>
@@ -89,6 +89,10 @@ export const Header: React.FC<HeaderProps> = ({ title, back, current }) => {
         <ListLinkItem selected={current === 'my_questions'} url="/questions/?mode=mine" afterClick={closeDrawer}>
           <ListItemIcon><SubjectIcon /></ListItemIcon>
           <ListItemText primary="自分のコード" />
+        </ListLinkItem>
+        <ListLinkItem selected={current === 'unreads'} url="/unreads" afterClick={closeDrawer}>
+          <ListItemIcon><SubjectIcon /></ListItemIcon>
+          <ListItemText primary="未読" />
         </ListLinkItem>
      </List>
     </Drawer>
