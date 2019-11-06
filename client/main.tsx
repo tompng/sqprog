@@ -7,10 +7,17 @@ import { QuestionView } from './question/QuestionView'
 import { QuestionsView } from './question/QuestionsView'
 import { applyRippleStyle } from './lib/ikachan'
 import { CurrentUserContext } from './context'
+import { Header, PageBody } from './components/Header'
+
 const history = createBrowserHistory()
 
 const NewQuestionView: React.FC = () => {
-  return <NewQuestionForm />
+  return <>
+    <Header />
+    <PageBody>
+      <NewQuestionForm />
+    </PageBody>
+  </>
 }
 
 const NotFoundView: React.FC = () => {

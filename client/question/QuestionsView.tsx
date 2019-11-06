@@ -4,10 +4,17 @@ import { makeStyles } from '@material-ui/core/styles'
 import styled from 'styled-components'
 import { Grid, Button } from '@material-ui/core'
 import QuestionCard from './QuestionCard'
+import { Header, PageBody } from '../components/Header'
 
 export const QuestionsView: React.FC = () => <QuestionsList mode="all" />
 
 type Mode = 'all' | 'mine' | 'resolved' | 'unresolved'
+const titles: Record<Mode, string> = {
+  all: 'みんなのコード',
+  mine: '自分のコード',
+  resolved: 'いかちゃんが見たコード',
+  unresolved: 'いかちゃんが見てないコード'
+}
 export const QuestionsList: React.FC<{ mode: Mode }> = ({ mode }) => {
   const limit = 48
   const [offset, setOffset] = useState(0)
@@ -21,21 +28,27 @@ export const QuestionsList: React.FC<{ mode: Mode }> = ({ mode }) => {
       collection: ['id', 'uid', 'title', 'commentCount', 'resolved', 'mode', 'voteSummary', 'createdAt']
     }
   })
-  if (!result) return <div>loading...</div>
+  if (!result) return <div>
+    <Header title={titles[mode]} />
+    <PageBody>loading...</PageBody>
+  </div>
   const loading = result.offset !== offset
   const { total, collection: questions } = result
   return <div>
-    <Grid container spacing={2} style={{ opacity: loading ? 0.2 : 1 }}>
-      {questions.map(q => {
-        return <Grid key={q.id} item xs={12} sm={6} md={4} lg={3} >
-          <QuestionCard {...q} />
-        </Grid>
-      })}
-    </Grid>
-    <Pagination
-      onChange={page => { setOffset((page - 1) * limit) }}
-      currentPage={Math.ceil((offset + 1)/ limit)}
-      totalPages={Math.ceil(total / limit)} />
+    <Header title={titles[mode]} />
+    <PageBody>
+      <Grid container spacing={2} style={{ opacity: loading ? 0.2 : 1 }}>
+        {questions.map(q => {
+          return <Grid key={q.id} item xs={12} sm={6} md={4} lg={3} >
+            <QuestionCard {...q} />
+          </Grid>
+        })}
+      </Grid>
+      <Pagination
+        onChange={page => { setOffset((page - 1) * limit) }}
+        currentPage={Math.ceil((offset + 1)/ limit)}
+        totalPages={Math.ceil(total / limit)} />
+    </PageBody>
   </div>
 }
 

@@ -15,6 +15,7 @@ import {
   IconButton, Menu, MenuItem
 } from '@material-ui/core'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
+import { Header, PageBody } from '../components/Header'
 
 export const QuestionView: React.FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
   const questionId = Number(match.params.id)
@@ -61,48 +62,54 @@ export const QuestionView: React.FC<RouteComponentProps<{ id: string }>> = ({ ma
     history.push('/questions/')
   }, [question])
   const currentUser = useContext(CurrentUserContext)
-  if (!question) return <div>loading...</div>
+  if (!question) return <div>
+    <Header title="loading..." />
+    <PageBody>loading...</PageBody>
+  </div>
   return <QuestionContext.Provider value={questionContextValue}>
-    <QuestionInfo>
-      <QuestionUserInfo>
-        <UserIcon uid={question.uid} size={64} />
-        <div>{question.uid === 'ikachan' ? 'いかちゃん' : '投稿いか'}</div>
-      </QuestionUserInfo>
-      { currentUser === 'ikachan' &&
-        <QuestionMenu>
-          <IconButton onClick={handleMenuOpen}>
-            <MoreVertIcon />
-          </IconButton>
-          <Menu anchorEl={anchorEl} open={!!anchorEl} onClose={handleMenuClose}>
-            <MenuItem onClick={handleResolve}>{
-              question.resolved ? '未完了に戻す' : '完了にする'
-            }</MenuItem>
-            <MenuItem onClick={handleDelete}>削除</MenuItem>
-          </Menu>
-        </QuestionMenu>
-      }
-      <CommentDescription>
-        {
-          question.mode === 'terrible' &&
-          <div><TerribleModeTag>理不尽なコメントをリクエスト</TerribleModeTag></div>
+    <Header title={`${question.title.substr(0, 12) + '...'}`} />
+    <PageBody>
+      <QuestionInfo>
+        <QuestionUserInfo>
+          <UserIcon uid={question.uid} size={64} />
+          <div>{question.uid === 'ikachan' ? 'いかちゃん' : '投稿いか'}</div>
+        </QuestionUserInfo>
+        { currentUser === 'ikachan' &&
+          <QuestionMenu>
+            <IconButton onClick={handleMenuOpen}>
+              <MoreVertIcon />
+            </IconButton>
+            <Menu anchorEl={anchorEl} open={!!anchorEl} onClose={handleMenuClose}>
+              <MenuItem onClick={handleResolve}>{
+                question.resolved ? '未完了に戻す' : '完了にする'
+              }</MenuItem>
+              <MenuItem onClick={handleDelete}>削除</MenuItem>
+            </Menu>
+          </QuestionMenu>
         }
-        <CommentHighlight content={question.description || '説明: なし'} />
-      </CommentDescription>
-      <VoteWrapper>
-        <Vote questionId={question.id} myVote={question.myVote && question.myVote.value} voteSummary={question.voteSummary} />
-      </VoteWrapper>
-    </QuestionInfo>
-    <CommentGroup>
+        <CommentDescription>
+          {
+            question.mode === 'terrible' &&
+            <div><TerribleModeTag>理不尽なコメントをリクエスト</TerribleModeTag></div>
+          }
+          <CommentHighlight content={question.description || '説明: なし'} />
+        </CommentDescription>
+        <VoteWrapper>
+          <Vote questionId={question.id} myVote={question.myVote && question.myVote.value} voteSummary={question.voteSummary} />
+        </VoteWrapper>
+      </QuestionInfo>
+      <CommentGroup>
+        {
+          question.questionComments.map(c => <Comment key={c.id} commentId={c.id} {...c} myVote={c.myVote && c.myVote.value} voteSummary={c.voteSummary} />)
+        }
+        <NewCommentForm {...({} as any)} />
+      </CommentGroup>
       {
-        question.questionComments.map(c => <Comment key={c.id} commentId={c.id} {...c} myVote={c.myVote && c.myVote.value} voteSummary={c.voteSummary} />)
+        question.codes.map(({ id, fileName, threads, code }) => {
+          return <Code key={id} codeId={id} fileName={fileName} code={code} threads={threads}/>
+        })
       }
-      <NewCommentForm {...({} as any)} />
-    </CommentGroup>
-    {
-      question.codes.map(({ id, fileName, threads, code }) => {
-        return <Code key={id} codeId={id} fileName={fileName} code={code} threads={threads}/>
-      })
-    }
+    </PageBody>
   </QuestionContext.Provider>
 }
 
