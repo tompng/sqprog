@@ -63,11 +63,11 @@ export const QuestionView: React.FC<RouteComponentProps<{ id: string }>> = ({ ma
   }, [question])
   const currentUser = useContext(CurrentUserContext)
   if (!question) return <div>
-    <Header title="loading..." />
+    <Header back title="loading..." />
     <PageBody>loading...</PageBody>
   </div>
   return <QuestionContext.Provider value={questionContextValue}>
-    <Header title={`${question.title.substr(0, 12) + '...'}`} />
+    <Header back title={`${question.title.substr(0, 12) + '...'}`} />
     <PageBody>
       <QuestionInfo>
         <QuestionUserInfo>

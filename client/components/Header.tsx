@@ -10,7 +10,9 @@ import AlertIcon from '@material-ui/icons/Notifications'
 import SendIcon from '@material-ui/icons/Send'
 import SubjectIcon from '@material-ui/icons/Subject'
 import WidgetsIcon from '@material-ui/icons/Widgets'
-import StorageIcon from '@material-ui/icons/Storage'
+import BackIcon from '@material-ui/icons/NavigateBefore'
+
+import { LastQuestionListUrlContext } from '../context'
 import useRouter from 'use-react-router'
 
 const useStyles = makeStyles(theme => ({
@@ -27,17 +29,26 @@ const useStyles = makeStyles(theme => ({
 
 type HeaderProps = {
   title?: string
+  back?: boolean
 }
-export const Header: React.FC<HeaderProps> = ({ title }: HeaderProps) => {
+export const Header: React.FC<HeaderProps> = ({ title, back }: HeaderProps) => {
   const classes = useStyles()
   const { history } = useRouter()
   const [drawerOpen, setDrawerOpen] = useState(false)
+  const [backUrl] = useContext(LastQuestionListUrlContext)
   return <div className={classes.root}>
     <AppBar position="fixed">
       <Toolbar>
-        <IconButton edge="start" className={classes.menuButton} color="inherit" onClick={() => setDrawerOpen(true)}>
-          <MenuIcon />
-        </IconButton>
+        { back
+          ? <IconButton edge="start" className={classes.menuButton} color="inherit" onClick={() => {
+              backUrl ? history.goBack() : history.push('/questions')
+            }}>
+            <BackIcon />
+          </IconButton>
+          : <IconButton edge="start" className={classes.menuButton} color="inherit" onClick={() => setDrawerOpen(true)}>
+            <MenuIcon />
+          </IconButton>
+        }
         <Typography variant="h6" className={classes.title}>
           {title || ''}
         </Typography>
