@@ -17,7 +17,7 @@ class QuestionsController < ApplicationController
   end
 
   def create
-    raise unless Question.can_create?
+    # raise unless Question.can_create?
     raise if Question.where(uid: current_user_uid).where('created_at > ?', 1.minutes.ago).exists?
     question = Question.new description: create_params[:description], uid: current_user_uid, mode: create_params[:mode]
     title_base = [question.description]
