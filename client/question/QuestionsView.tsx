@@ -1,7 +1,7 @@
 import React, { useEffect, useContext } from 'react'
 import { useFetchedState } from '../api'
 import styled from 'styled-components'
-import { Grid, Button } from '@material-ui/core'
+import { Grid, Button, Typography } from '@material-ui/core'
 import QuestionCard from './QuestionCard'
 import { Header, PageBody } from '../components/Header'
 import { LastQuestionListUrlContext } from '../context'
@@ -68,6 +68,7 @@ export const QuestionsList: React.FC<{ mode: Mode; page: number }> = ({ mode, pa
             <QuestionCard {...q} />
           </Grid>
         })}
+        {questions.length === 0 && <Typography>まだありません</Typography>}
       </Grid>
       <Pagination
         onChange={page => { history.push(questionsUrl(mode, page))}}
