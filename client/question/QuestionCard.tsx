@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import styled from 'styled-components'
 import UserIcon from '../components/UserIcon'
@@ -7,12 +7,12 @@ import { Card, CardActionArea } from '@material-ui/core'
 import CommentIcon from '@material-ui/icons/Comment'
 import { Link } from '../components/Link'
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles({
   paper: {
     position: 'relative',
     height: 120
   }
-}))
+})
 
 type Props = {
   id: number

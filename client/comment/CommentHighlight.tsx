@@ -8,7 +8,7 @@ import {
 } from '@material-ui/core'
 
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles({
   inlineCode: {
     paddingLeft: '4px',
     paddingRight: '4px',
@@ -34,7 +34,7 @@ const useStyles = makeStyles(theme => ({
     lineHeight: '1.2em',
     minHeight: '1.2em'
   }
-}))
+})
 
 const CommentHighlight: React.FC<{ content: string }> = ({ content }) => {
   const classes = useStyles()
