@@ -9,7 +9,7 @@
     </style>
   </head>
   <body>
-    <div id="app" data-uid="<%= current_user_uid %>"></div>
+    <div id="app" data-uid="<%= current_user_uid %>" data-ikachan-twitter="<%= ENV['TWITTER_NAME'] || 'undefined' %>"></div>
     <%= javascript_webpack_tag 'main.js' %>
   </body>
 </html>

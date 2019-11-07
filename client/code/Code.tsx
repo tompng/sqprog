@@ -9,7 +9,7 @@ import {
 import CommentIcon from '@material-ui/icons/Comment'
 import { CodeIdContext, LineNumberContext } from '../context'
 import { NewCommentForm } from '../comment/CommentForm'
-import Comment from '../comment/Comment'
+import Comment, { CommentSample, CommentSampleProps } from '../comment/Comment'
 
 const useStyles = makeStyles({
   paper: {
@@ -109,6 +109,34 @@ export const Code: React.FC<CodeProps> = ({ codeId, fileName, code, threads }) =
       </ScrollableWrapper>
     </Paper>
   </CodeIdContext.Provider>
+}
+
+export const CodeSample: React.FC<{
+  code: string
+  lang: string
+  threads: {
+    lineNumber: number
+    comments: CommentSampleProps[]
+  }[]
+}> = ({ lang, code, threads }) => {
+  const htmls = useMemo(() => highlightLines(lang, code), [code])
+  return <>
+    {
+      htmls.map((html, lineIndex) => {
+        const thread = threads.find(t => t.lineNumber === lineIndex + 1)
+        return <div key={lineIndex}>
+          <StyledCode dangerouslySetInnerHTML={{ __html: html }} />
+          {thread &&
+            <CommentGroup style={{ maxWidth: 'none' }}>
+              {
+                thread.comments.map((c, i) => <CommentSample key={i} {...c}/>)
+              }
+            </CommentGroup>
+          }
+        </div>
+      })
+    }
+  </>
 }
 
 const CommentGroup = styled.div`

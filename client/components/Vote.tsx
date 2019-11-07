@@ -34,6 +34,23 @@ export const useVoteStyles = makeStyles({
     backgroundImage: svgImgUrl(VoteRotateSVG)
   }
 })
+export const VoteSample: React.FC<{ voteSummary: VoteSummary }>  = ({ voteSummary }) => {
+  return <>
+    <VoteButton value='up'/>
+    <VoteCount><Typography>{voteSummary.up || 0}</Typography></VoteCount>
+    <VoteButton value='down'/>
+    <VoteCount><Typography>{voteSummary.down || 0}</Typography></VoteCount>
+    {voteSummary.forward && <>
+      <VoteButton value='forward'/>
+      <VoteCount><Typography>{voteSummary.forward}</Typography></VoteCount>
+    </>}
+    {voteSummary.rotate && <>
+      <VoteButton value='rotate'/>
+      <VoteCount><Typography>{voteSummary.rotate}</Typography></VoteCount>
+    </>}
+  </>
+}
+
 const Vote: React.FC<{ commentId?: number; questionId?: number; myVote?: VoteType | null; voteSummary: VoteSummary }> = ({ questionId, commentId, myVote, voteSummary }) => {
   const question = useContext(QuestionContext)
   const [tmpValue, setTmpValue] = useState<VoteValue | null | undefined>(undefined)
@@ -77,12 +94,12 @@ const Vote: React.FC<{ commentId?: number; questionId?: number; myVote?: VoteTyp
 export default React.memo(Vote)
 
 type VoteValue = 'up' | 'down' | 'forward' | 'rotate'
-const VoteButton: React.FC<{ value: VoteValue; selected: boolean; onChange: (value: VoteValue | null) => void }> = ({
+const VoteButton: React.FC<{ value: VoteValue; selected?: boolean; onChange?: (value: VoteValue | null) => void }> = ({
   value, selected, onChange
 }) => {
   const classes = useVoteStyles()
   const onClick = useCallback(() => {
-    onChange(selected ? null : value)
+    if (onChange) onChange(selected ? null : value)
   }, [onChange, selected])
   return <IconButton onClick={onClick}>
     {selected && <Splat />}

@@ -7,7 +7,7 @@ import MoreVertIcon from '@material-ui/icons/MoreVert'
 import EditIcon from '@material-ui/icons/Edit'
 import DeleteIcon from '@material-ui/icons/Delete'
 import { comment as commentApi } from '../api'
-import Vote, { VoteType, VoteSummary } from '../components/Vote'
+import Vote, { VoteSample, VoteType, VoteSummary } from '../components/Vote'
 import { QuestionContext } from '../context'
 import { UpdateCommentForm } from './CommentForm'
 import {
@@ -75,6 +75,23 @@ const Comment: React.FC<CommentProps> = ({ commentId, uid, content, myVote, vote
   </CommentWrapper>
 }
 
+export type CommentSampleProps = { uid: string; content: string; voteSummary: VoteSummary }
+export const CommentSample: React.FC<CommentSampleProps> = ({ uid, content, voteSummary }) => {
+  return <CommentWrapper>
+    <CommentUserInfo>
+      <UserIcon uid={uid} size={56} />
+      <Typography variant="caption">
+        {uid === 'ikachan' && 'いかちゃん'}
+      </Typography>
+    </CommentUserInfo>
+    <CommentBody style={{ paddingRight: 4 }}>
+      <CommentHighlight content={content} />
+    </CommentBody>
+    <VoteWrapper>
+      <VoteSample voteSummary={voteSummary} />
+    </VoteWrapper>
+  </CommentWrapper>
+}
 
 const CommentMenu = styled.div`
 position: absolute;
