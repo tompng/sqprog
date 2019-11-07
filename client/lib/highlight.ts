@@ -1,4 +1,4 @@
-import { highlight } from 'highlight.js'
+import { highlight } from './hljs'
 
 const alias: Record<string, string> = {
   tsx: 'jsx'
