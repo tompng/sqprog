@@ -4,7 +4,7 @@ class Question < ApplicationRecord
   has_many :votes, dependent: :destroy
   has_many :question_comments, -> { where code_thread_id: nil }, class_name: 'Comment'
   has_many :unreads, dependent: :destroy
-  has_one :author_unread, -> { where uid: uid }, class_name: 'Unread'
+  has_one :author_unread, -> q { where uid: q.uid }, class_name: 'Unread'
   has_one :ikachan_unread, -> { where uid: :ikachan }, class_name: 'Unread'
   scope :resolved, -> { where resolved: true }
   scope :unresolved, -> { where resolved: false }
@@ -30,10 +30,10 @@ class Question < ApplicationRecord
 
   def set_unread(uid, time)
     if uid != 'ikachan'
-      ikachan_unread ||= Unread.new uid: 'ikachan', time: time
+      self.ikachan_unread ||= Unread.new uid: 'ikachan', time: time
     end
     if uid != self.uid
-      author_unread ||= Unread.new uid: self.uid, time: time
+      self.author_unread ||= Unread.new uid: self.uid, time: time
     end
   end
 
