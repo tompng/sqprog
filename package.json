@@ -25,7 +25,8 @@
   "version": "0.1.0",
   "scripts": {
     "start": "webpack --watch",
-    "build": "webpack -p"
+    "build": "webpack -p",
+    "postinstall": "webpack --mode production"
   },
   "devDependencies": {
     "clean-webpack-plugin": "^3.0.0",
