@@ -1,7 +1,9 @@
 Rails.application.routes.draw do
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
   get '/sign_in', to: 'sessions#new'
-  get '/users/sign_in', to: redirect('/sign_in')
+  [nil, 'user', 'users'].product(%w[sign_in log_in login]) do |paths|
+    get "/#{paths.compact.join('/')}", to: redirect('/sign_in')
+  end
   post '/sign_in', to: 'sessions#create'
 
   resources :questions, only: [:create, :destroy] do
