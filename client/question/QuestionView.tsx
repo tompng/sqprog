@@ -16,6 +16,7 @@ import {
 } from '@material-ui/core'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
 import { Header, PageBody } from '../components/Header'
+import { Loading } from '../components/Loading'
 
 export const QuestionView: React.FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
   const questionId = Number(match.params.id)
@@ -75,7 +76,7 @@ export const QuestionView: React.FC<RouteComponentProps<{ id: string }>> = ({ ma
     const message = complete ? '404 not found' : 'loading...'
     return <div>
       <Header back title={message} />
-      <PageBody>{message}</PageBody>
+      <PageBody>{complete ? message : <Loading />}</PageBody>
     </div>
   }
   return <QuestionContext.Provider value={questionContextValue}>

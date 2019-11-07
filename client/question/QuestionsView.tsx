@@ -8,6 +8,7 @@ import { LastQuestionListUrlContext } from '../context'
 import queryString from 'query-string'
 import { RouteProps } from 'react-router'
 import useRouter from 'use-react-router'
+import { Loading } from '../components/Loading'
 
 type Mode = 'all' | 'mine' | 'resolved' | 'unresolved'
 const modes: Mode[] = ['all', 'mine', 'resolved', 'unresolved']
@@ -54,7 +55,7 @@ export const QuestionsList: React.FC<{ mode: Mode; page: number }> = ({ mode, pa
   })
   if (!result) return <div>
     <Header title={titles[mode]} />
-    <PageBody>loading...</PageBody>
+    <PageBody><Loading /></PageBody>
   </div>
   const loading = result.offset !== offset
   const { total, collection: questions } = result

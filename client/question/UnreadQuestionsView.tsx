@@ -6,6 +6,7 @@ import QuestionCard from './QuestionCard'
 import { Header, PageBody } from '../components/Header'
 import { LastQuestionListUrlContext, UnreadCountContext } from '../context'
 import { RouteProps } from 'react-router'
+import { Loading } from '../components/Loading'
 
 export const UnreadQuestionsView: React.FC<{ location: Exclude<RouteProps['location'], undefined> }> = ({ location }) => {
   const [, setURL] = useContext(LastQuestionListUrlContext)
@@ -27,7 +28,7 @@ export const UnreadQuestionsView: React.FC<{ location: Exclude<RouteProps['locat
 
   if (!result) return <>
     <Header title="未読" current="unreads" />
-    <PageBody>loading...</PageBody>
+    <PageBody><Loading /></PageBody>
   </>
   if (result.length === 0) return <>
     <Header title="未読" current="unreads" />
