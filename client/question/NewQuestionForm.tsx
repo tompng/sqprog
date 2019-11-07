@@ -45,6 +45,10 @@ export const NewQuestionForm: React.FC = () => {
     setCodes(codes => [...codes, newCode()])
   }, [setCodes])
   const send = useCallback(async () => {
+    if (!codes.find(c => c.code)) {
+      alert('コードが空です')
+      return
+    }
     try {
       setSending(true)
       const { id } = await question.create({ mode, description, codes })
