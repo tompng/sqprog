@@ -2,6 +2,7 @@ const path = require('path')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const ManifestPlugin = require('webpack-manifest-plugin')
 const LiveReloadPlugin = require('webpack-livereload-plugin')
+const CompressionPlugin = require('compression-webpack-plugin')
 
 module.exports = (_, { mode }) => {
   const isProduction = mode === 'production'
@@ -25,6 +26,7 @@ module.exports = (_, { mode }) => {
     plugins: [
       new CleanWebpackPlugin(),
       new ManifestPlugin({ fileName: 'webpack-manifest.json' }),
+      isProduction && new CompressionPlugin(),
       !isProduction && new LiveReloadPlugin({ appendScriptTag: true })
     ].filter(Boolean)
   }
