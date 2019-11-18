@@ -30,7 +30,7 @@ export const TopPage: React.FC = () => {
         'これはさかなですね`🐟`',
         'ふやしちゃえ',
         '```ruby',
-        "$><< (message + rand(hello % world).chr('utf-8')",
+        "$><< (message + rand(hello % world)).chr('utf-8')",
         'hello_world! if rand > 0.01',
         '```'
       ].join('\n'),
