@@ -30,7 +30,7 @@ const useStyles = makeStyles({
     textDecoration: 'line-through'
   },
   line: {
-    whiteSpace: 'pre',
+    whiteSpace: 'pre-wrap',
     lineHeight: '1.2em',
     minHeight: '1.2em'
   }
