@@ -3,13 +3,15 @@ import highlightLines from '../lib/highlight'
 import styled from 'styled-components'
 import { StyledCode } from './StyledCode'
 import {
-  Paper, Button, Typography,
+  Paper, Button, Typography, IconButton,
+  Dialog, DialogTitle, DialogContent, DialogActions,
   makeStyles
 } from '@material-ui/core'
 import CommentIcon from '@material-ui/icons/Comment'
 import { CodeIdContext, LineNumberContext } from '../context'
 import { NewCommentForm } from '../comment/CommentForm'
 import Comment, { CommentSample, CommentSampleProps } from '../comment/Comment'
+import OpenInNewIcon from '@material-ui/icons/OpenInNew'
 
 const useStyles = makeStyles({
   paper: {
@@ -72,11 +74,13 @@ type CodeProps = {
     comments: Comment[]
   }[]
 }
-const FileName = styled.div`
+const FileHeader = styled.div`
   padding: 4px;
   color: gray;
   font-weight: bold;
   border-bottom: 1px solid silver;
+  height: 24px;
+  position: relative;
 `
 const ScrollableWrapper = styled.div`
   width: 100%;
@@ -92,9 +96,15 @@ export const Code: React.FC<CodeProps> = ({ codeId, fileName, code, threads }) =
   const commentsByLineNumber = useMemo(() => {
     return new Map(threads.map(t => [t.lineNumber, t.comments]))
   }, [threads])
+  const [dialogOpen, setDialogOpen] = useState(false)
   return <CodeIdContext.Provider value={codeId}>
     <Paper className={classes.paper}>
-      <FileName><Typography>file:&nbsp;{fileName}</Typography></FileName>
+      <FileHeader>
+        <Typography>file:&nbsp;{fileName}</Typography>
+        <IconButton size="small" style={{ position: 'absolute', right: 1, top: 1 }} onClick={() => setDialogOpen(true)}>
+          <OpenInNewIcon />
+        </IconButton>
+      </FileHeader>
       <ScrollableWrapper>
         <table className={classes.table}>
           <tbody>
@@ -108,6 +118,19 @@ export const Code: React.FC<CodeProps> = ({ codeId, fileName, code, threads }) =
         </table>
       </ScrollableWrapper>
     </Paper>
+    <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
+      <DialogTitle>{fileName}</DialogTitle>
+      <DialogContent>
+        <StyledTextArea readOnly value={code} />
+      </DialogContent>
+      <DialogActions>
+        <a href={dialogOpen ? `data:text/plain,${encodeURIComponent(code)}` : ''} download={fileName} target="_blank">
+          <Button color="primary">
+            ダウンロード
+          </Button>
+        </a>
+      </DialogActions>
+    </Dialog>
   </CodeIdContext.Provider>
 }
 
@@ -145,6 +168,15 @@ const CommentGroup = styled.div`
   border: 1px solid silver;
   margin-bottom: 0.4em;
   background: white;
+`
+
+const StyledTextArea = styled.textarea`
+  width: 60vw;
+  max-width: 100%;
+  height: 30vh;
+  box-sizing: border-box;
+  font-size: 16px;
+  font-family: Courier, Osaka-Mono, monospace;
 `
 
 const CodeLineBase: React.FC<{ lineNumber: number; comments?: Comment[]; html: string }> = ({ lineNumber, html, comments }) => {
